@@ -1,0 +1,183 @@
+package com.app.sdui.registry
+
+import com.app.sdui.components.*
+import com.app.sdui.core.UIComponent
+import com.app.sdui.core.UIStyle
+import com.app.sdui.parser.ActionParser
+import com.app.sdui.parser.ComponentParser
+import com.app.sdui.parser.StyleParser
+
+/**
+ * Central registry that maps component type names to their parsers.
+ *
+ * All 12 built-in component parsers are pre-registered. Third-party
+ * developers can dynamically register custom components via [register].
+ *
+ * Usage:
+ * ```kotlin
+ * val registry = ComponentRegistry()
+ * registry.register("my_custom_widget") { props, children, style, id ->
+ *     MyCustomWidget(props["title"] as String, id = id, style = style)
+ * }
+ * ```
+ */
+class ComponentRegistry {
+
+    private val parsers = mutableMapOf<String, ComponentParser>()
+
+    init {
+        registerBuiltInParsers()
+    }
+
+    // ──────────────────────────────────────────────
+    // Public API
+    // ──────────────────────────────────────────────
+
+    fun register(type: String, parser: ComponentParser) {
+        parsers[type.lowercase()] = parser
+    }
+
+    fun getParser(type: String): ComponentParser? {
+        return parsers[type.lowercase()]
+    }
+
+    fun hasParser(type: String): Boolean {
+        return parsers.containsKey(type.lowercase())
+    }
+
+    fun registeredTypes(): Set<String> = parsers.keys.toSet()
+
+    /**
+     * Parses a full component tree from a raw JSON map.
+     *
+     * This is the primary entry point for converting JSON → [UIComponent].
+     */
+    @Suppress("UNCHECKED_CAST")
+    fun parseComponent(json: Map<String, Any>): UIComponent {
+        val type = json["type"] as? String
+            ?: throw IllegalArgumentException("Component JSON must contain a 'type' field: $json")
+
+        val props = json["props"] as? Map<String, Any> ?: emptyMap()
+        val styleMap = json["style"] as? Map<String, Any>
+        val childrenJson = json["children"] as? List<Map<String, Any>>
+        val id = json["id"] as? String
+
+        val style: UIStyle? = StyleParser.parse(styleMap)
+        val children: List<UIComponent> = childrenJson?.map { parseComponent(it) } ?: emptyList()
+
+        val parser = getParser(type)
+            ?: return UnknownComponent(type = type, id = id, style = style)
+
+        return parser.parse(props, children, style, id)
+    }
+
+    // ──────────────────────────────────────────────
+    // Built-in parsers
+    // ──────────────────────────────────────────────
+
+    private fun registerBuiltInParsers() {
+        register("text") { props, _, style, id ->
+            TextComponent(
+                value = props["value"] as? String ?: "",
+                id = id,
+                style = style,
+            )
+        }
+
+        register("image") { props, _, style, id ->
+            ImageComponent(
+                url = props["url"] as? String ?: "",
+                contentDescription = props["contentDescription"] as? String,
+                id = id,
+                style = style,
+            )
+        }
+
+        register("button") { props, _, style, id ->
+            ButtonComponent(
+                label = props["label"] as? String ?: "",
+                action = ActionParser.parse(props["action"]),
+                id = id,
+                style = style,
+            )
+        }
+
+        register("column") { _, children, style, id ->
+            ColumnComponent(
+                children = children,
+                id = id,
+                style = style,
+            )
+        }
+
+        register("row") { _, children, style, id ->
+            RowComponent(
+                children = children,
+                id = id,
+                style = style,
+            )
+        }
+
+        register("spacer") { props, _, style, id ->
+            SpacerComponent(
+                height = (props["height"] as? Number)?.toFloat(),
+                width = (props["width"] as? Number)?.toFloat(),
+                id = id,
+                style = style,
+            )
+        }
+
+        register("card") { _, children, style, id ->
+            CardComponent(
+                child = children.firstOrNull()
+                    ?: UnknownComponent(type = "empty_card"),
+                id = id,
+                style = style,
+            )
+        }
+
+        register("divider") { props, _, style, id ->
+            DividerComponent(
+                thickness = (props["thickness"] as? Number)?.toFloat() ?: 1f,
+                color = props["color"] as? String,
+                id = id,
+                style = style,
+            )
+        }
+
+        register("text_input") { props, _, style, id ->
+            TextInputComponent(
+                value = props["value"] as? String ?: "",
+                placeholder = props["placeholder"] as? String,
+                action = ActionParser.parse(props["action"]),
+                id = id,
+                style = style,
+            )
+        }
+
+        register("icon_button") { props, _, style, id ->
+            IconButtonComponent(
+                icon = props["icon"] as? String ?: "",
+                action = ActionParser.parse(props["action"]),
+                id = id,
+                style = style,
+            )
+        }
+
+        register("list") { _, children, style, id ->
+            ListComponent(
+                children = children,
+                id = id,
+                style = style,
+            )
+        }
+
+        register("bottom_nav") { _, children, style, id ->
+            BottomNavComponent(
+                children = children,
+                id = id,
+                style = style,
+            )
+        }
+    }
+}
