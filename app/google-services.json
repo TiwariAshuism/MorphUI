@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "938365495150",
+    "firebase_url": "https://morphui-fdfd5-default-rtdb.firebaseio.com",
+    "project_id": "morphui-fdfd5",
+    "storage_bucket": "morphui-fdfd5.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:938365495150:android:fe1a67a5260ab0ebd3437f",
+        "android_client_info": {
+          "package_name": "com.example.morphui"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAH7-Rf3IjfXGXFyrrDR44y723lt1CLa6k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
