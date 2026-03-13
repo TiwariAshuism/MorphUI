@@ -21,3 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "MorphUI"
 include(":app")
+include(":sdui")
