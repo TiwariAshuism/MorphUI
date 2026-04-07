@@ -2,7 +2,6 @@ package composer
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"morphui/backend/internal/clients"
@@ -43,7 +42,7 @@ type SectionRequest struct {
 
 // BuildHome composes a realistic home: hero + ordered rails + global dedupe + image variants (Phase 3).
 func (c *Composer) BuildHome(ctx context.Context, req HomeRequest) (*models.SduiEnvelope, error) {
-	profile, err := c.user.GetProfile(ctx, req.UserID, req.Locale)
+	_, err := c.user.GetProfile(ctx, req.UserID, req.Locale)
 	if err != nil {
 		return nil, err
 	}
@@ -72,10 +71,22 @@ func (c *Composer) BuildHome(ctx context.Context, req HomeRequest) (*models.Sdui
 	}
 
 	flags := defaultFeatureFlags()
+
+	var trendingIDs []string
+	var recommendedIDs []string
+	for _, rail := range rails {
+		switch rail.ID {
+		case "trending":
+			trendingIDs = append([]string(nil), rail.IDs...)
+		case "recommended":
+			recommendedIDs = append([]string(nil), rail.IDs...)
+		}
+	}
+
 	var hero *models.Component
 	if flags["enable_hero_banner"] {
 		if hi := pickHeroItem(rails, byID); hi != nil {
-			h := heroBanner(*hi, profile.Name)
+			h := cinemaHeroBox(*hi)
 			// Phase 7: experiment-driven copy tweak.
 			if exps["hero_variant"] == "alt_copy" {
 				applyHeroCopyVariant(&h, "Tonight's pick", "Because you watched similar titles")
@@ -84,21 +95,26 @@ func (c *Composer) BuildHome(ctx context.Context, req HomeRequest) (*models.Sdui
 		}
 	}
 
-	railComponents := make([]models.Component, 0, len(rails))
-	for _, rail := range rails {
-		var gating *models.Gating
-		if rail.ID == "recommended" {
-			gating = &models.Gating{
-				Experiment: "reco_rail_v2",
-				Variant:    "variant_b",
-				Required:   false,
-			}
-		}
-		railComponents = append(railComponents, buildRailAsColumn(rail, byID, gating))
+	scroll := make([]models.Component, 0, 16)
+	scroll = append(scroll, cinemaTopBar())
+	if hero != nil {
+		scroll = append(scroll, *hero)
 	}
+	scroll = append(scroll, spacerComponent(32))
+	if len(trendingIDs) > 5 {
+		trendingIDs = trendingIDs[:5]
+	}
+	if len(recommendedIDs) > 5 {
+		recommendedIDs = recommendedIDs[:5]
+	}
+	scroll = append(scroll, cinemaTrendingSection(trendingIDs, byID))
+	scroll = append(scroll, spacerComponent(48))
+	scroll = append(scroll, cinemaCuratedSection(byID, req.UserID))
+	scroll = append(scroll, spacerComponent(48))
+	scroll = append(scroll, cinemaNewReleasesSection(recommendedIDs, byID))
 
-	greeting := fmt.Sprintf("Welcome, %s", profile.Name)
-	screen := homeRootList(greeting, hero, railComponents)
+	list := cinemaScrollList(scroll)
+	screen := cinemaRootColumn(list, cinemaBottomNav())
 
 	ttl := req.HomeTTLMs
 	if ttl <= 0 {
@@ -130,8 +146,10 @@ func applyHeroCopyVariant(hero *models.Component, title, subtitle string) {
 		}
 		if c.Type == "text" && c.Props != nil {
 			switch c.ID {
-			case "hero_title":
+			case "hero_title_primary":
 				c.Props["value"] = title
+			case "hero_title_accent":
+				c.Props["value"] = ""
 			case "hero_subtitle":
 				c.Props["value"] = subtitle
 			}

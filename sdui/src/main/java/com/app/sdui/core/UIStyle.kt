@@ -39,4 +39,22 @@ data class UIStyle(
     val gradientToColor: String? = null,
     val gradientFromAlpha: Float? = null,
     val gradientToAlpha: Float? = null,
+    /** Optional middle stop for 3-color gradients (50% position). */
+    val gradientViaColor: String? = null,
+    val gradientViaAlpha: Float? = null,
+    /** `vertical` (default) or `horizontal` for gradient brush direction. */
+    val gradientDirection: String? = null,
+    /** Letter spacing in sp (e.g. 1.2f for wide tracking). */
+    val letterSpacing: Float? = null,
+    // Layout (not applied in generic [toModifier]; used by box / row / column renderers).
+    /** Box child placement: `fill`, `bottomStart`, `center`, `topStart`, etc. */
+    val layoutAlign: String? = null,
+    /** Row/Column flex child weight (RowScope/ColumnScope). */
+    val weight: Float? = null,
+    /** Row: `start`, `center`, `end`, `spaceBetween`, `spaceEvenly`, `spaceAround`. */
+    val horizontalArrangement: String? = null,
+    /** Column content horizontal alignment: `start`, `center`, `end`. */
+    val columnHorizontalAlignment: String? = null,
+    /** Column: `start`, `center`, `end`, `spaceBetween`. */
+    val verticalArrangement: String? = null,
 )

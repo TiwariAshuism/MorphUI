@@ -114,6 +114,8 @@ object MorphUIInspector {
             is ButtonComponent -> "Button (label=\"${component.label}\")"
             is ColumnComponent -> "Column"
             is RowComponent -> "Row"
+            is BoxComponent -> "Box (${component.children.size} children)"
+            is NavBarItemComponent -> "NavBarItem (label=\"${component.label}\")"
             is SpacerComponent -> {
                 val dims = listOfNotNull(
                     component.height?.let { "h=$it" },
@@ -126,7 +128,11 @@ object MorphUIInspector {
             is TextInputComponent -> "TextInput (placeholder=\"${component.placeholder ?: ""}\")"
             is IconButtonComponent -> "IconButton (icon=\"${component.icon}\")"
             is ListComponent -> "List (${component.children.size} items)"
+            is CarouselComponent -> "Carousel (${component.children.size} items)"
+            is GridComponent -> "Grid (${component.children.size} items)"
             is BottomNavComponent -> "BottomNav (${component.children.size} items)"
+            is PageComponent -> "Page (${component.children.size} children)"
+            is HeroComponent -> "Hero"
             is UnknownComponent -> "Unknown (type=\"${component.type}\")"
             else -> {}
         }
@@ -142,9 +148,15 @@ object MorphUIInspector {
         return when (component) {
             is ColumnComponent -> component.children
             is RowComponent -> component.children
+            is BoxComponent -> component.children
             is CardComponent -> listOf(component.child)
             is ListComponent -> component.children
+            is CarouselComponent -> component.children
+            is GridComponent -> component.children
             is BottomNavComponent -> component.children
+            is PageComponent -> component.children
+            is HeroComponent -> emptyList()
+            is NavBarItemComponent -> emptyList()
             is TextComponent -> emptyList()
             is ImageComponent -> emptyList()
             is ButtonComponent -> emptyList()

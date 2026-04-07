@@ -1,6 +1,7 @@
 package com.app.sdui.renderer
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -11,8 +12,11 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -24,8 +28,12 @@ import com.app.sdui.renderer.StyleResolver.fontSize
 import com.app.sdui.renderer.StyleResolver.fontWeight
 import com.app.sdui.renderer.StyleResolver.textAlign
 import com.app.sdui.renderer.StyleResolver.textColor
+import com.app.sdui.renderer.StyleResolver.parseColumnHorizontalAlignment
+import com.app.sdui.renderer.StyleResolver.parseHorizontalArrangement
+import com.app.sdui.renderer.StyleResolver.parseVerticalArrangement
 import com.app.sdui.renderer.StyleResolver.toContainerModifier
 import com.app.sdui.renderer.StyleResolver.toModifier
+import com.app.sdui.renderer.StyleResolver.toTextStyle
 
 /**
  * Unified Jetpack Compose renderer for MorphUI components.
@@ -60,6 +68,8 @@ object ComposeRenderer {
             is CarouselComponent -> RenderCarousel(component, formState, onStateChange, onAction)
             is GridComponent -> RenderGrid(component, formState, onStateChange, onAction)
             is BottomNavComponent -> RenderBottomNav(component, formState, onStateChange, onAction)
+            is BoxComponent -> RenderBox(component, formState, onStateChange, onAction)
+            is NavBarItemComponent -> RenderNavBarItemOrphan(component, onAction)
             is UnknownComponent -> RenderUnknown(component)
             else -> RenderUnknown(UnknownComponent(type = component.javaClass.simpleName, id = component.id, style = component.style))
         }
@@ -78,6 +88,7 @@ object ComposeRenderer {
     ) {
         Column(
             modifier = component.style.toContainerModifier().fillMaxSize(),
+            horizontalAlignment = parseColumnHorizontalAlignment(component.style?.columnHorizontalAlignment),
         ) {
             component.title?.let { title ->
                 Text(
@@ -87,7 +98,7 @@ object ComposeRenderer {
                 )
             }
             component.children.forEach { child ->
-                RenderComponent(child, formState, onStateChange, onAction)
+                RenderColumnChild(child, formState, onStateChange, onAction)
             }
         }
     }
@@ -97,19 +108,19 @@ object ComposeRenderer {
         Text(
             text = component.value,
             modifier = component.style.toModifier(),
-            color = component.style.textColor(),
-            fontSize = component.style.fontSize(),
-            fontWeight = component.style.fontWeight(),
-            textAlign = component.style.textAlign(),
+            style = component.style.toTextStyle(),
         )
     }
 
     @Composable
     private fun RenderImage(component: ImageComponent) {
+        val fill = component.style?.layoutAlign?.equals("fill", ignoreCase = true) == true
         AsyncImage(
             model = component.url,
             contentDescription = component.contentDescription,
-            modifier = component.style.toModifier(),
+            modifier = component.style.toModifier().then(
+                if (fill) Modifier.fillMaxSize() else Modifier,
+            ),
             contentScale = ContentScale.Crop,
         )
     }
@@ -199,12 +210,38 @@ object ComposeRenderer {
 
     @Composable
     private fun RenderColumn(component: ColumnComponent, formState: Map<String, Any>, onStateChange: (String, Any) -> Unit, onAction: (UIAction) -> Unit) {
+        val needsWeight = component.children.any { it.style?.weight != null }
+        val fillParent = component.style?.layoutAlign?.equals("fill", ignoreCase = true) == true
         Column(
-            modifier = component.style.toContainerModifier(),
+            modifier = component.style.toContainerModifier().then(
+                when {
+                    fillParent || needsWeight -> Modifier.fillMaxSize()
+                    else -> Modifier
+                },
+            ),
+            verticalArrangement = parseVerticalArrangement(component.style?.verticalArrangement),
+            horizontalAlignment = parseColumnHorizontalAlignment(component.style?.columnHorizontalAlignment),
         ) {
             component.children.forEach { child ->
-                RenderComponent(child, formState, onStateChange, onAction)
+                RenderColumnChild(child, formState, onStateChange, onAction)
             }
+        }
+    }
+
+    @Composable
+    private fun ColumnScope.RenderColumnChild(
+        child: UIComponent,
+        formState: Map<String, Any>,
+        onStateChange: (String, Any) -> Unit,
+        onAction: (UIAction) -> Unit,
+    ) {
+        val w = child.style?.weight
+        val mod = if (w != null) Modifier.weight(w) else Modifier
+        Box(
+            modifier = mod.fillMaxWidth(),
+            contentAlignment = Alignment.TopStart,
+        ) {
+            RenderComponent(child, formState, onStateChange, onAction)
         }
     }
 
@@ -212,10 +249,83 @@ object ComposeRenderer {
     private fun RenderRow(component: RowComponent, formState: Map<String, Any>, onStateChange: (String, Any) -> Unit, onAction: (UIAction) -> Unit) {
         Row(
             modifier = component.style.toContainerModifier(),
+            horizontalArrangement = parseHorizontalArrangement(component.style?.horizontalArrangement),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             component.children.forEach { child ->
-                RenderComponent(child, formState, onStateChange, onAction)
+                RenderRowChild(child, formState, onStateChange, onAction)
             }
+        }
+    }
+
+    @Composable
+    private fun RowScope.RenderRowChild(
+        child: UIComponent,
+        formState: Map<String, Any>,
+        onStateChange: (String, Any) -> Unit,
+        onAction: (UIAction) -> Unit,
+    ) {
+        val w = child.style?.weight
+        val mod = if (w != null) Modifier.weight(w) else Modifier
+        Box(modifier = mod) {
+            RenderComponent(child, formState, onStateChange, onAction)
+        }
+    }
+
+    @Composable
+    private fun RenderBox(
+        component: BoxComponent,
+        formState: Map<String, Any>,
+        onStateChange: (String, Any) -> Unit,
+        onAction: (UIAction) -> Unit,
+    ) {
+        if (component.children.isEmpty()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .then(component.style.toModifier()),
+            ) {}
+            return
+        }
+        Box(modifier = component.style.toContainerModifier()) {
+            component.children.forEach { child ->
+                RenderBoxChild(child, formState, onStateChange, onAction)
+            }
+        }
+    }
+
+    @Composable
+    private fun BoxScope.RenderBoxChild(
+        child: UIComponent,
+        formState: Map<String, Any>,
+        onStateChange: (String, Any) -> Unit,
+        onAction: (UIAction) -> Unit,
+    ) {
+        val la = child.style?.layoutAlign
+        val fill = la.equals("fill", ignoreCase = true)
+        val placement = when {
+            fill -> Modifier.fillMaxSize()
+            else -> {
+                val a = StyleResolver.parseBoxLayoutAlign(la)
+                if (a != null) Modifier.align(a) else Modifier
+            }
+        }
+        Box(modifier = placement) {
+            RenderComponent(child, formState, onStateChange, onAction)
+        }
+    }
+
+    @Composable
+    private fun RenderNavBarItemOrphan(component: NavBarItemComponent, onAction: (UIAction) -> Unit) {
+        Row(
+            modifier = Modifier
+                .clickable { onAction(component.action) }
+                .padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            Text(text = component.icon)
+            Text(text = component.label)
         }
     }
 
@@ -313,9 +423,11 @@ object ComposeRenderer {
 
     @Composable
     private fun RenderList(component: ListComponent, formState: Map<String, Any>, onStateChange: (String, Any) -> Unit, onAction: (UIAction) -> Unit) {
+        val padBottom = component.contentPaddingBottomDp ?: 0f
         LazyColumn(
             modifier = component.style.toContainerModifier()
                 .then(Modifier.fillMaxSize()),
+            contentPadding = PaddingValues(bottom = padBottom.dp),
         ) {
             items(component.children) { child ->
                 RenderComponent(child, formState, onStateChange, onAction)
@@ -379,18 +491,49 @@ object ComposeRenderer {
     private fun RenderBottomNav(component: BottomNavComponent, formState: Map<String, Any>, onStateChange: (String, Any) -> Unit, onAction: (UIAction) -> Unit) {
         val style = component.style
 
-        Surface(
-            color = StyleResolver.parseColor(style?.backgroundColor) ?: Color.White,
-            shadowElevation = style?.elevation?.dp ?: 8.dp,
+        val navTint = StyleResolver.parseColor(style?.backgroundColor) ?: Color(0xFF131313)
+        NavigationBar(
+            modifier = Modifier
+                .fillMaxWidth()
+                .navigationBarsPadding()
+                .then(style.toModifier()),
+            containerColor = navTint,
+            tonalElevation = 0.dp,
         ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .then(style.toModifier()),
-                horizontalArrangement = Arrangement.SpaceEvenly,
-            ) {
-                component.children.forEach { child ->
-                    RenderComponent(child, formState, onStateChange, onAction)
+            component.children.forEach { child ->
+                when (child) {
+                    is NavBarItemComponent -> {
+                        val cinemaColors = NavigationBarItemDefaults.colors(
+                            selectedIconColor = Color(0xFFDC2626),
+                            selectedTextColor = Color(0xFFDC2626),
+                            indicatorColor = Color.Transparent,
+                            unselectedIconColor = Color(0xFF737373),
+                            unselectedTextColor = Color(0xFF737373),
+                        )
+                        NavigationBarItem(
+                            selected = child.selected,
+                            onClick = { onAction(child.action) },
+                            icon = {
+                                Text(
+                                    text = child.icon,
+                                    style = MaterialTheme.typography.titleMedium,
+                                )
+                            },
+                            label = {
+                                Text(
+                                    text = child.label,
+                                    fontSize = 10.sp,
+                                    fontWeight = FontWeight.Medium,
+                                )
+                            },
+                            colors = cinemaColors,
+                        )
+                    }
+                    else -> {
+                        Box(Modifier.padding(4.dp)) {
+                            RenderComponent(child, formState, onStateChange, onAction)
+                        }
+                    }
                 }
             }
         }

@@ -3,10 +3,8 @@ package com.app.sdui.components
 import com.app.sdui.core.UIComponent
 import com.app.sdui.core.UIStyle
 
-data class ListComponent(
+data class BoxComponent(
     val children: List<UIComponent> = emptyList(),
-    /** Bottom inset for scroll content when a fixed bottom bar is shown (dp). */
-    val contentPaddingBottomDp: Float? = null,
     override val id: String? = null,
     override val style: UIStyle? = null,
 ) : UIComponent

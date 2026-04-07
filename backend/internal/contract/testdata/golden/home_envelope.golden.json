@@ -12,226 +12,1123 @@
     "schema": "sdui.v1"
   },
   "feature_flags": {
-    "enable_carousel": false,
+    "enable_carousel": true,
     "enable_hero_banner": true
   },
   "screen": {
-    "type": "list",
-    "id": "home_root_list",
+    "type": "column",
+    "id": "cinema_root",
     "style": {
       "backgroundColor": "#FF131313"
     },
     "children": [
       {
-        "type": "column",
-        "id": "cinema_app_bar",
+        "type": "list",
+        "id": "cinema_scroll",
+        "props": {
+          "contentPaddingBottomDp": 80
+        },
         "style": {
-          "backgroundColor": "#59131313",
-          "blurDp": 12,
-          "paddingHorizontal": 16,
-          "paddingVertical": 6,
-          "zIndex": 10
+          "backgroundColor": "#FF131313",
+          "weight": 1
         },
         "children": [
           {
-            "type": "row",
-            "id": "cinema_app_bar_row",
+            "type": "column",
+            "id": "cinema_top_bar_wrap",
             "style": {
-              "paddingVertical": 4
+              "backgroundColor": "#990A0A0A",
+              "blurDp": 24,
+              "zIndex": 50
             },
             "children": [
               {
-                "type": "text",
-                "id": "cinema_logo",
-                "props": {
-                  "value": "CINEMA"
-                },
+                "type": "row",
+                "id": "cinema_top_bar",
                 "style": {
-                  "fontSize": 18,
-                  "fontWeight": "bold",
-                  "textColor": "#FFFFFFFF"
-                }
-              },
-              {
-                "type": "spacer",
-                "props": {
-                  "width": 16
-                }
-              },
-              {
-                "type": "icon_button",
-                "id": "cinema_search",
-                "props": {
-                  "action": {
-                    "route": "/search",
-                    "type": "Navigate"
-                  },
-                  "icon": "🔍"
+                  "height": 64,
+                  "horizontalArrangement": "spaceBetween",
+                  "paddingHorizontal": 24
                 },
-                "style": {
-                  "textColor": "#FFFFFFFF"
-                }
-              },
-              {
-                "type": "icon_button",
-                "id": "cinema_profile",
-                "props": {
-                  "action": {
-                    "route": "/profile",
-                    "type": "Navigate"
-                  },
-                  "icon": "👤"
-                },
-                "style": {
-                  "textColor": "#FFFFFFFF"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "type": "column",
-        "id": "home_hero",
-        "children": [
-          {
-            "type": "card",
-            "id": "hero_card",
-            "style": {
-              "cornerRadius": 16,
-              "elevation": 8,
-              "margin": 12
-            },
-            "children": [
-              {
-                "type": "column",
                 "children": [
                   {
-                    "type": "image",
-                    "props": {
-                      "contentDescription": "Title golden_user_1_t2",
-                      "url": "https://picsum.photos/seed/golden_user_1_t2_hero/1920/640",
-                      "variants": {
-                        "backdrop": "https://picsum.photos/seed/golden_user_1_t2_backdrop/1280/720",
-                        "hero": "https://picsum.photos/seed/golden_user_1_t2_hero/1920/640",
-                        "poster": "https://picsum.photos/seed/golden_user_1_t2_poster/300/450"
-                      }
-                    },
+                    "type": "row",
+                    "id": "cinema_top_bar_left",
                     "style": {
-                      "cornerRadius": 12,
-                      "height": 280
-                    }
-                  },
-                  {
-                    "type": "column",
-                    "style": {
-                      "gradientFromAlpha": 0,
-                      "gradientFromColor": "#FF131313",
-                      "gradientToAlpha": 1,
-                      "gradientToColor": "#FF131313",
-                      "padding": 12
+                      "horizontalArrangement": "start"
                     },
                     "children": [
                       {
                         "type": "text",
-                        "id": "hero_kicker",
+                        "id": "cinema_icon",
                         "props": {
-                          "value": "Featured for User golden_user_1"
+                          "value": "🎬"
                         },
                         "style": {
-                          "fontSize": 14,
-                          "fontWeight": "medium",
-                          "paddingHorizontal": 0,
-                          "textColor": "#B3FFFFFF"
-                        }
-                      },
-                      {
-                        "type": "text",
-                        "id": "hero_title",
-                        "props": {
-                          "value": "Title golden_user_1_t2"
-                        },
-                        "style": {
-                          "fontSize": 22,
-                          "fontWeight": "bold",
-                          "paddingHorizontal": 0,
-                          "paddingVertical": 6,
-                          "textColor": "#FFFFFFFF"
-                        }
-                      },
-                      {
-                        "type": "text",
-                        "id": "hero_subtitle",
-                        "props": {
-                          "value": "Because you watched similar titles"
-                        },
-                        "style": {
-                          "fontSize": 14,
-                          "paddingHorizontal": 0,
-                          "textColor": "#CCFFFFFF"
+                          "fontSize": 24,
+                          "textColor": "#FFDC2626"
                         }
                       },
                       {
                         "type": "spacer",
                         "props": {
-                          "height": 12
+                          "width": 8
                         }
                       },
                       {
-                        "type": "row",
-                        "id": "hero_actions",
-                        "style": {
-                          "paddingHorizontal": 0,
-                          "paddingVertical": 8
+                        "type": "text",
+                        "id": "cinema_logo",
+                        "props": {
+                          "value": "CINEMA"
                         },
-                        "children": [
-                          {
-                            "type": "button",
-                            "props": {
-                              "action": {
-                                "params": {
-                                  "id": "golden_user_1_t2"
-                                },
-                                "route": "/play",
-                                "type": "Navigate"
-                              },
-                              "label": "Play"
+                        "style": {
+                          "fontSize": 24,
+                          "fontWeight": "black",
+                          "letterSpacing": 2,
+                          "textColor": "#FFE50914"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "icon_button",
+                    "id": "cinema_search",
+                    "props": {
+                      "action": {
+                        "route": "/search",
+                        "type": "Navigate"
+                      },
+                      "icon": "🔍"
+                    },
+                    "style": {
+                      "textColor": "#FFE2E2E2"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "box",
+            "id": "cinema_hero",
+            "style": {
+              "height": 795
+            },
+            "children": [
+              {
+                "type": "image",
+                "props": {
+                  "contentDescription": "Title golden_user_1_t2",
+                  "url": "https://picsum.photos/seed/golden_user_1_t2_hero/1920/640",
+                  "variants": {
+                    "backdrop": "https://picsum.photos/seed/golden_user_1_t2_backdrop/1280/720",
+                    "hero": "https://picsum.photos/seed/golden_user_1_t2_hero/1920/640",
+                    "poster": "https://picsum.photos/seed/golden_user_1_t2_poster/300/450",
+                    "thumbnail_tiny": "https://picsum.photos/seed/golden_user_1_t2_thumb/120/180"
+                  }
+                },
+                "style": {
+                  "layoutAlign": "fill"
+                }
+              },
+              {
+                "type": "box",
+                "id": "cinema_hero_gradient",
+                "style": {
+                  "gradientDirection": "vertical",
+                  "gradientFromAlpha": 0,
+                  "gradientFromColor": "#00000000",
+                  "gradientToAlpha": 1,
+                  "gradientToColor": "#FF131313",
+                  "gradientViaAlpha": 0.2,
+                  "gradientViaColor": "#FF131313",
+                  "layoutAlign": "fill"
+                }
+              },
+              {
+                "type": "column",
+                "style": {
+                  "layoutAlign": "bottomStart",
+                  "paddingHorizontal": 24,
+                  "paddingVertical": 48
+                },
+                "children": [
+                  {
+                    "type": "text",
+                    "id": "hero_kicker",
+                    "props": {
+                      "value": "TRENDING NOW"
+                    },
+                    "style": {
+                      "backgroundColor": "#33E50914",
+                      "borderColor": "#4DE50914",
+                      "borderWidth": 1,
+                      "cornerRadius": 999,
+                      "fontSize": 10,
+                      "fontWeight": "bold",
+                      "paddingHorizontal": 12,
+                      "paddingVertical": 4,
+                      "textColor": "#FFE50914"
+                    }
+                  },
+                  {
+                    "type": "spacer",
+                    "props": {
+                      "height": 24
+                    }
+                  },
+                  {
+                    "type": "text",
+                    "id": "hero_title_primary",
+                    "props": {
+                      "value": "THE LAST"
+                    },
+                    "style": {
+                      "fontSize": 60,
+                      "fontWeight": "black",
+                      "textColor": "#FFE2E2E2"
+                    }
+                  },
+                  {
+                    "type": "text",
+                    "id": "hero_title_accent",
+                    "props": {
+                      "value": "PROTOCOL"
+                    },
+                    "style": {
+                      "fontSize": 72,
+                      "fontWeight": "black",
+                      "textColor": "#FFE50914"
+                    }
+                  },
+                  {
+                    "type": "spacer",
+                    "props": {
+                      "height": 24
+                    }
+                  },
+                  {
+                    "type": "text",
+                    "id": "hero_subtitle",
+                    "props": {
+                      "value": "Because you watched similar titles"
+                    },
+                    "style": {
+                      "fontSize": 14,
+                      "maxWidth": 320,
+                      "textColor": "#FFE9BCB6"
+                    }
+                  },
+                  {
+                    "type": "spacer",
+                    "props": {
+                      "height": 12
+                    }
+                  },
+                  {
+                    "type": "row",
+                    "id": "hero_actions",
+                    "style": {
+                      "horizontalArrangement": "start"
+                    },
+                    "children": [
+                      {
+                        "type": "button",
+                        "props": {
+                          "action": {
+                            "params": {
+                              "id": "golden_user_1_t2"
                             },
-                            "style": {
-                              "backgroundColor": "#FFE50914",
-                              "cornerRadius": 8
-                            }
+                            "route": "/play",
+                            "type": "Navigate"
                           },
-                          {
-                            "type": "spacer",
-                            "props": {
-                              "width": 12
-                            }
-                          },
-                          {
-                            "type": "button",
-                            "props": {
-                              "action": {
-                                "body": {
-                                  "content_id": "golden_user_1_t2"
-                                },
-                                "endpoint": "/api/mylist",
-                                "method": "POST",
-                                "type": "ApiCall"
-                              },
-                              "label": "My List"
+                          "label": "▶  WATCH NOW"
+                        },
+                        "style": {
+                          "backgroundColor": "#FFE50914",
+                          "cornerRadius": 999,
+                          "height": 56,
+                          "paddingVertical": 16,
+                          "textColor": "#FFFFF7F6",
+                          "weight": 1
+                        }
+                      },
+                      {
+                        "type": "spacer",
+                        "props": {
+                          "width": 12
+                        }
+                      },
+                      {
+                        "type": "icon_button",
+                        "props": {
+                          "action": {
+                            "body": {
+                              "content_id": "golden_user_1_t2"
                             },
-                            "style": {
-                              "backgroundColor": "#33FFFFFF",
-                              "cornerRadius": 8
-                            }
+                            "endpoint": "/api/mylist",
+                            "method": "POST",
+                            "type": "ApiCall"
+                          },
+                          "icon": "＋"
+                        },
+                        "style": {
+                          "backgroundColor": "#994D4D4D",
+                          "borderColor": "#1AFFFFFF",
+                          "borderWidth": 1,
+                          "cornerRadius": 28,
+                          "height": 56,
+                          "textColor": "#FFE2E2E2",
+                          "width": 56
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "analytics": {
+              "content_id": "golden_user_1_t2",
+              "section": "hero"
+            }
+          },
+          {
+            "type": "spacer",
+            "props": {
+              "height": 32
+            }
+          },
+          {
+            "type": "column",
+            "id": "section_trending",
+            "style": {
+              "paddingHorizontal": 24,
+              "paddingVertical": 8
+            },
+            "children": [
+              {
+                "type": "row",
+                "id": "trending_header_row",
+                "style": {
+                  "horizontalArrangement": "spaceBetween"
+                },
+                "children": [
+                  {
+                    "type": "text",
+                    "id": "trending_heading",
+                    "props": {
+                      "value": "Trending Now"
+                    },
+                    "style": {
+                      "fontSize": 20,
+                      "fontWeight": "bold",
+                      "textColor": "#FFE2E2E2"
+                    }
+                  },
+                  {
+                    "type": "button",
+                    "id": "trending_see_all",
+                    "props": {
+                      "action": {
+                        "route": "/trending",
+                        "type": "Navigate"
+                      },
+                      "label": "See All"
+                    },
+                    "style": {
+                      "backgroundColor": "#00000000",
+                      "fontSize": 10,
+                      "padding": 0,
+                      "paddingHorizontal": 0,
+                      "paddingVertical": 0,
+                      "textColor": "#FFE50914"
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "spacer",
+                "props": {
+                  "height": 16
+                }
+              },
+              {
+                "type": "carousel",
+                "props": {
+                  "contentPaddingHorizontalDp": 0,
+                  "itemSpacingDp": 16
+                },
+                "children": [
+                  {
+                    "type": "column",
+                    "id": "movie_card_golden_user_1_t2_trend",
+                    "style": {
+                      "width": 160
+                    },
+                    "children": [
+                      {
+                        "type": "image",
+                        "props": {
+                          "url": "https://picsum.photos/seed/golden_user_1_t2_poster/300/450",
+                          "variants": {
+                            "backdrop": "https://picsum.photos/seed/golden_user_1_t2_backdrop/1280/720",
+                            "hero": "https://picsum.photos/seed/golden_user_1_t2_hero/1920/640",
+                            "poster": "https://picsum.photos/seed/golden_user_1_t2_poster/300/450",
+                            "thumbnail_tiny": "https://picsum.photos/seed/golden_user_1_t2_thumb/120/180"
                           }
-                        ]
+                        },
+                        "style": {
+                          "cornerRadius": 12,
+                          "height": 240,
+                          "width": 160
+                        }
                       },
                       {
                         "type": "spacer",
                         "props": {
                           "height": 8
+                        }
+                      },
+                      {
+                        "type": "text",
+                        "id": "movie_title_golden_user_1_t2_trend",
+                        "props": {
+                          "value": "Title golden_user_1_t2"
+                        },
+                        "style": {
+                          "fontSize": 12,
+                          "fontWeight": "semibold",
+                          "textColor": "#FFFFFEFE"
+                        }
+                      },
+                      {
+                        "type": "spacer",
+                        "props": {
+                          "height": 4
+                        }
+                      },
+                      {
+                        "type": "text",
+                        "id": "movie_meta_golden_user_1_t2_trend",
+                        "props": {
+                          "value": "Sci-Fi • 2024"
+                        },
+                        "style": {
+                          "fontSize": 10,
+                          "fontWeight": "normal",
+                          "textColor": "#FF737373"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "column",
+                    "id": "movie_card_golden_user_1_t3_trend",
+                    "style": {
+                      "width": 160
+                    },
+                    "children": [
+                      {
+                        "type": "image",
+                        "props": {
+                          "url": "https://picsum.photos/seed/golden_user_1_t3_poster/300/450",
+                          "variants": {
+                            "backdrop": "https://picsum.photos/seed/golden_user_1_t3_backdrop/1280/720",
+                            "hero": "https://picsum.photos/seed/golden_user_1_t3_hero/1920/640",
+                            "poster": "https://picsum.photos/seed/golden_user_1_t3_poster/300/450",
+                            "thumbnail_tiny": "https://picsum.photos/seed/golden_user_1_t3_thumb/120/180"
+                          }
+                        },
+                        "style": {
+                          "cornerRadius": 12,
+                          "height": 240,
+                          "width": 160
+                        }
+                      },
+                      {
+                        "type": "spacer",
+                        "props": {
+                          "height": 8
+                        }
+                      },
+                      {
+                        "type": "text",
+                        "id": "movie_title_golden_user_1_t3_trend",
+                        "props": {
+                          "value": "Title golden_user_1_t3"
+                        },
+                        "style": {
+                          "fontSize": 12,
+                          "fontWeight": "semibold",
+                          "textColor": "#FFFFFEFE"
+                        }
+                      },
+                      {
+                        "type": "spacer",
+                        "props": {
+                          "height": 4
+                        }
+                      },
+                      {
+                        "type": "text",
+                        "id": "movie_meta_golden_user_1_t3_trend",
+                        "props": {
+                          "value": "Thriller • 2023"
+                        },
+                        "style": {
+                          "fontSize": 10,
+                          "fontWeight": "normal",
+                          "textColor": "#FF737373"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "column",
+                    "id": "movie_card_golden_user_1_t4_trend",
+                    "style": {
+                      "width": 160
+                    },
+                    "children": [
+                      {
+                        "type": "image",
+                        "props": {
+                          "url": "https://picsum.photos/seed/golden_user_1_t4_poster/300/450",
+                          "variants": {
+                            "backdrop": "https://picsum.photos/seed/golden_user_1_t4_backdrop/1280/720",
+                            "hero": "https://picsum.photos/seed/golden_user_1_t4_hero/1920/640",
+                            "poster": "https://picsum.photos/seed/golden_user_1_t4_poster/300/450",
+                            "thumbnail_tiny": "https://picsum.photos/seed/golden_user_1_t4_thumb/120/180"
+                          }
+                        },
+                        "style": {
+                          "cornerRadius": 12,
+                          "height": 240,
+                          "width": 160
+                        }
+                      },
+                      {
+                        "type": "spacer",
+                        "props": {
+                          "height": 8
+                        }
+                      },
+                      {
+                        "type": "text",
+                        "id": "movie_title_golden_user_1_t4_trend",
+                        "props": {
+                          "value": "Title golden_user_1_t4"
+                        },
+                        "style": {
+                          "fontSize": 12,
+                          "fontWeight": "semibold",
+                          "textColor": "#FFFFFEFE"
+                        }
+                      },
+                      {
+                        "type": "spacer",
+                        "props": {
+                          "height": 4
+                        }
+                      },
+                      {
+                        "type": "text",
+                        "id": "movie_meta_golden_user_1_t4_trend",
+                        "props": {
+                          "value": "Drama • 2024"
+                        },
+                        "style": {
+                          "fontSize": 10,
+                          "fontWeight": "normal",
+                          "textColor": "#FF737373"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "column",
+                    "id": "movie_card_golden_user_1_t5_trend",
+                    "style": {
+                      "width": 160
+                    },
+                    "children": [
+                      {
+                        "type": "image",
+                        "props": {
+                          "url": "https://picsum.photos/seed/golden_user_1_t5_poster/300/450",
+                          "variants": {
+                            "backdrop": "https://picsum.photos/seed/golden_user_1_t5_backdrop/1280/720",
+                            "hero": "https://picsum.photos/seed/golden_user_1_t5_hero/1920/640",
+                            "poster": "https://picsum.photos/seed/golden_user_1_t5_poster/300/450",
+                            "thumbnail_tiny": "https://picsum.photos/seed/golden_user_1_t5_thumb/120/180"
+                          }
+                        },
+                        "style": {
+                          "cornerRadius": 12,
+                          "height": 240,
+                          "width": 160
+                        }
+                      },
+                      {
+                        "type": "spacer",
+                        "props": {
+                          "height": 8
+                        }
+                      },
+                      {
+                        "type": "text",
+                        "id": "movie_title_golden_user_1_t5_trend",
+                        "props": {
+                          "value": "Title golden_user_1_t5"
+                        },
+                        "style": {
+                          "fontSize": 12,
+                          "fontWeight": "semibold",
+                          "textColor": "#FFFFFEFE"
+                        }
+                      },
+                      {
+                        "type": "spacer",
+                        "props": {
+                          "height": 4
+                        }
+                      },
+                      {
+                        "type": "text",
+                        "id": "movie_meta_golden_user_1_t5_trend",
+                        "props": {
+                          "value": "Sci-Fi • 2024"
+                        },
+                        "style": {
+                          "fontSize": 10,
+                          "fontWeight": "normal",
+                          "textColor": "#FF737373"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "spacer",
+            "props": {
+              "height": 48
+            }
+          },
+          {
+            "type": "column",
+            "id": "section_curated",
+            "style": {
+              "paddingHorizontal": 24,
+              "paddingVertical": 8
+            },
+            "children": [
+              {
+                "type": "text",
+                "id": "curated_heading",
+                "props": {
+                  "value": "Curated For You"
+                },
+                "style": {
+                  "fontSize": 20,
+                  "fontWeight": "bold",
+                  "textColor": "#FFE2E2E2"
+                }
+              },
+              {
+                "type": "spacer",
+                "props": {
+                  "height": 16
+                }
+              },
+              {
+                "type": "column",
+                "children": [
+                  {
+                    "type": "box",
+                    "id": "curated_wide",
+                    "style": {
+                      "height": 176
+                    },
+                    "children": [
+                      {
+                        "type": "image",
+                        "props": {
+                          "contentDescription": "Title golden_user_1_t1",
+                          "url": "https://picsum.photos/seed/golden_user_1_t1_hero/1920/640",
+                          "variants": {
+                            "backdrop": "https://picsum.photos/seed/golden_user_1_t1_backdrop/1280/720",
+                            "hero": "https://picsum.photos/seed/golden_user_1_t1_hero/1920/640",
+                            "poster": "https://picsum.photos/seed/golden_user_1_t1_poster/300/450",
+                            "thumbnail_tiny": "https://picsum.photos/seed/golden_user_1_t1_thumb/120/180"
+                          }
+                        },
+                        "style": {
+                          "layoutAlign": "fill",
+                          "opacity": 0.6
+                        }
+                      },
+                      {
+                        "type": "box",
+                        "style": {
+                          "gradientDirection": "horizontal",
+                          "gradientFromAlpha": 0.9,
+                          "gradientFromColor": "#FF131313",
+                          "gradientToAlpha": 0,
+                          "gradientToColor": "#00000000",
+                          "gradientViaAlpha": 0.4,
+                          "gradientViaColor": "#FF131313",
+                          "layoutAlign": "fill"
+                        }
+                      },
+                      {
+                        "type": "column",
+                        "style": {
+                          "layoutAlign": "centerStart",
+                          "paddingHorizontal": 24,
+                          "paddingVertical": 24
+                        },
+                        "children": [
+                          {
+                            "type": "text",
+                            "id": "curated_special",
+                            "props": {
+                              "value": "Special Edition"
+                            },
+                            "style": {
+                              "fontSize": 10,
+                              "fontWeight": "bold",
+                              "textColor": "#FFE50914"
+                            }
+                          },
+                          {
+                            "type": "text",
+                            "id": "curated_wide_label",
+                            "props": {
+                              "value": "THE DIRECTOR'S\nCUT"
+                            },
+                            "style": {
+                              "fontSize": 24,
+                              "fontWeight": "black",
+                              "textColor": "#FFE2E2E2"
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "spacer",
+                    "props": {
+                      "height": 12
+                    }
+                  },
+                  {
+                    "type": "row",
+                    "id": "curated_small_row",
+                    "style": {
+                      "horizontalArrangement": "spacedBy"
+                    },
+                    "children": [
+                      {
+                        "type": "box",
+                        "id": "curated_bento_gray",
+                        "style": {
+                          "backgroundColor": "#FF2A2A2A",
+                          "borderColor": "#335E3F3B",
+                          "borderWidth": 1,
+                          "cornerRadius": 12,
+                          "height": 176,
+                          "weight": 1
+                        },
+                        "children": [
+                          {
+                            "type": "column",
+                            "style": {
+                              "columnHorizontalAlignment": "start",
+                              "layoutAlign": "fill",
+                              "padding": 20,
+                              "verticalArrangement": "spaceBetween"
+                            },
+                            "children": [
+                              {
+                                "type": "box",
+                                "id": "bento_gray_icon_wrap",
+                                "style": {
+                                  "backgroundColor": "#FF131313",
+                                  "cornerRadius": 8,
+                                  "height": 40,
+                                  "width": 40
+                                },
+                                "children": [
+                                  {
+                                    "type": "text",
+                                    "id": "bento_gray_icon",
+                                    "props": {
+                                      "value": "★"
+                                    },
+                                    "style": {
+                                      "fontSize": 18,
+                                      "layoutAlign": "center",
+                                      "textColor": "#FFE50914"
+                                    }
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "text",
+                                "id": "bento_gray_title",
+                                "props": {
+                                  "value": "Award Winning Originals"
+                                },
+                                "style": {
+                                  "fontSize": 14,
+                                  "fontWeight": "bold",
+                                  "textColor": "#FFE2E2E2"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "type": "box",
+                        "id": "curated_bento_red",
+                        "style": {
+                          "backgroundColor": "#FFE50914",
+                          "cornerRadius": 12,
+                          "height": 176,
+                          "weight": 1
+                        },
+                        "children": [
+                          {
+                            "type": "column",
+                            "style": {
+                              "columnHorizontalAlignment": "start",
+                              "layoutAlign": "fill",
+                              "padding": 20,
+                              "verticalArrangement": "spaceBetween"
+                            },
+                            "children": [
+                              {
+                                "type": "box",
+                                "id": "bento_red_icon_wrap",
+                                "style": {
+                                  "backgroundColor": "#1AFFFFFF",
+                                  "cornerRadius": 8,
+                                  "height": 40,
+                                  "width": 40
+                                },
+                                "children": [
+                                  {
+                                    "type": "text",
+                                    "id": "bento_red_icon",
+                                    "props": {
+                                      "value": "✨"
+                                    },
+                                    "style": {
+                                      "fontSize": 18,
+                                      "layoutAlign": "center",
+                                      "textColor": "#FFFFF7F6"
+                                    }
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "text",
+                                "id": "bento_red_title",
+                                "props": {
+                                  "value": "TOP 10 TODAY"
+                                },
+                                "style": {
+                                  "fontSize": 14,
+                                  "fontWeight": "black",
+                                  "textColor": "#FFFFF7F6"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "spacer",
+            "props": {
+              "height": 48
+            }
+          },
+          {
+            "type": "column",
+            "id": "section_new_releases",
+            "style": {
+              "paddingHorizontal": 24,
+              "paddingVertical": 8
+            },
+            "children": [
+              {
+                "type": "row",
+                "id": "new_releases_header_row",
+                "style": {
+                  "horizontalArrangement": "spaceBetween"
+                },
+                "children": [
+                  {
+                    "type": "text",
+                    "id": "new_releases_heading",
+                    "props": {
+                      "value": "New Releases"
+                    },
+                    "style": {
+                      "fontSize": 20,
+                      "fontWeight": "bold",
+                      "textColor": "#FFE2E2E2"
+                    }
+                  },
+                  {
+                    "type": "button",
+                    "id": "new_releases_explore",
+                    "props": {
+                      "action": {
+                        "route": "/new",
+                        "type": "Navigate"
+                      },
+                      "label": "Explore"
+                    },
+                    "style": {
+                      "backgroundColor": "#00000000",
+                      "fontSize": 10,
+                      "padding": 0,
+                      "paddingHorizontal": 0,
+                      "paddingVertical": 0,
+                      "textColor": "#FFE50914"
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "spacer",
+                "props": {
+                  "height": 16
+                }
+              },
+              {
+                "type": "carousel",
+                "props": {
+                  "contentPaddingHorizontalDp": 0,
+                  "itemSpacingDp": 16
+                },
+                "children": [
+                  {
+                    "type": "box",
+                    "id": "new_rel_golden_user_1_t1",
+                    "style": {
+                      "height": 144,
+                      "width": 256
+                    },
+                    "children": [
+                      {
+                        "type": "image",
+                        "props": {
+                          "url": "https://picsum.photos/seed/golden_user_1_t1_poster/300/450",
+                          "variants": {
+                            "backdrop": "https://picsum.photos/seed/golden_user_1_t1_backdrop/1280/720",
+                            "hero": "https://picsum.photos/seed/golden_user_1_t1_hero/1920/640",
+                            "poster": "https://picsum.photos/seed/golden_user_1_t1_poster/300/450",
+                            "thumbnail_tiny": "https://picsum.photos/seed/golden_user_1_t1_thumb/120/180"
+                          }
+                        },
+                        "style": {
+                          "layoutAlign": "fill"
+                        }
+                      },
+                      {
+                        "type": "box",
+                        "style": {
+                          "gradientDirection": "vertical",
+                          "gradientFromAlpha": 0,
+                          "gradientFromColor": "#00000000",
+                          "gradientToAlpha": 1,
+                          "gradientToColor": "#CC000000",
+                          "gradientViaAlpha": 0,
+                          "gradientViaColor": "#00000000",
+                          "layoutAlign": "fill"
+                        }
+                      },
+                      {
+                        "type": "text",
+                        "id": "new_rel_lbl_golden_user_1_t1",
+                        "props": {
+                          "value": "Title golden_user_1_t1"
+                        },
+                        "style": {
+                          "fontSize": 14,
+                          "fontWeight": "bold",
+                          "layoutAlign": "bottomStart",
+                          "padding": 16,
+                          "textColor": "#FFFFFFFF"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "box",
+                    "id": "new_rel_golden_user_1_r2",
+                    "style": {
+                      "height": 144,
+                      "width": 256
+                    },
+                    "children": [
+                      {
+                        "type": "image",
+                        "props": {
+                          "url": "https://picsum.photos/seed/golden_user_1_r2_poster/300/450",
+                          "variants": {
+                            "backdrop": "https://picsum.photos/seed/golden_user_1_r2_backdrop/1280/720",
+                            "hero": "https://picsum.photos/seed/golden_user_1_r2_hero/1920/640",
+                            "poster": "https://picsum.photos/seed/golden_user_1_r2_poster/300/450",
+                            "thumbnail_tiny": "https://picsum.photos/seed/golden_user_1_r2_thumb/120/180"
+                          }
+                        },
+                        "style": {
+                          "layoutAlign": "fill"
+                        }
+                      },
+                      {
+                        "type": "box",
+                        "style": {
+                          "gradientDirection": "vertical",
+                          "gradientFromAlpha": 0,
+                          "gradientFromColor": "#00000000",
+                          "gradientToAlpha": 1,
+                          "gradientToColor": "#CC000000",
+                          "gradientViaAlpha": 0,
+                          "gradientViaColor": "#00000000",
+                          "layoutAlign": "fill"
+                        }
+                      },
+                      {
+                        "type": "text",
+                        "id": "new_rel_lbl_golden_user_1_r2",
+                        "props": {
+                          "value": "Title golden_user_1_r2"
+                        },
+                        "style": {
+                          "fontSize": 14,
+                          "fontWeight": "bold",
+                          "layoutAlign": "bottomStart",
+                          "padding": 16,
+                          "textColor": "#FFFFFFFF"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "box",
+                    "id": "new_rel_golden_user_1_r3",
+                    "style": {
+                      "height": 144,
+                      "width": 256
+                    },
+                    "children": [
+                      {
+                        "type": "image",
+                        "props": {
+                          "url": "https://picsum.photos/seed/golden_user_1_r3_poster/300/450",
+                          "variants": {
+                            "backdrop": "https://picsum.photos/seed/golden_user_1_r3_backdrop/1280/720",
+                            "hero": "https://picsum.photos/seed/golden_user_1_r3_hero/1920/640",
+                            "poster": "https://picsum.photos/seed/golden_user_1_r3_poster/300/450",
+                            "thumbnail_tiny": "https://picsum.photos/seed/golden_user_1_r3_thumb/120/180"
+                          }
+                        },
+                        "style": {
+                          "layoutAlign": "fill"
+                        }
+                      },
+                      {
+                        "type": "box",
+                        "style": {
+                          "gradientDirection": "vertical",
+                          "gradientFromAlpha": 0,
+                          "gradientFromColor": "#00000000",
+                          "gradientToAlpha": 1,
+                          "gradientToColor": "#CC000000",
+                          "gradientViaAlpha": 0,
+                          "gradientViaColor": "#00000000",
+                          "layoutAlign": "fill"
+                        }
+                      },
+                      {
+                        "type": "text",
+                        "id": "new_rel_lbl_golden_user_1_r3",
+                        "props": {
+                          "value": "Title golden_user_1_r3"
+                        },
+                        "style": {
+                          "fontSize": 14,
+                          "fontWeight": "bold",
+                          "layoutAlign": "bottomStart",
+                          "padding": 16,
+                          "textColor": "#FFFFFFFF"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "box",
+                    "id": "new_rel_golden_user_1_r4",
+                    "style": {
+                      "height": 144,
+                      "width": 256
+                    },
+                    "children": [
+                      {
+                        "type": "image",
+                        "props": {
+                          "url": "https://picsum.photos/seed/golden_user_1_r4_poster/300/450",
+                          "variants": {
+                            "backdrop": "https://picsum.photos/seed/golden_user_1_r4_backdrop/1280/720",
+                            "hero": "https://picsum.photos/seed/golden_user_1_r4_hero/1920/640",
+                            "poster": "https://picsum.photos/seed/golden_user_1_r4_poster/300/450",
+                            "thumbnail_tiny": "https://picsum.photos/seed/golden_user_1_r4_thumb/120/180"
+                          }
+                        },
+                        "style": {
+                          "layoutAlign": "fill"
+                        }
+                      },
+                      {
+                        "type": "box",
+                        "style": {
+                          "gradientDirection": "vertical",
+                          "gradientFromAlpha": 0,
+                          "gradientFromColor": "#00000000",
+                          "gradientToAlpha": 1,
+                          "gradientToColor": "#CC000000",
+                          "gradientViaAlpha": 0,
+                          "gradientViaColor": "#00000000",
+                          "layoutAlign": "fill"
+                        }
+                      },
+                      {
+                        "type": "text",
+                        "id": "new_rel_lbl_golden_user_1_r4",
+                        "props": {
+                          "value": "Title golden_user_1_r4"
+                        },
+                        "style": {
+                          "fontSize": 14,
+                          "fontWeight": "bold",
+                          "layoutAlign": "bottomStart",
+                          "padding": 16,
+                          "textColor": "#FFFFFFFF"
                         }
                       }
                     ]
@@ -240,1011 +1137,70 @@
               }
             ]
           }
-        ],
-        "analytics": {
-          "content_id": "golden_user_1_t2",
-          "section": "hero"
-        }
+        ]
       },
       {
-        "type": "text",
-        "id": "home_greeting",
-        "props": {
-          "value": "Welcome, User golden_user_1"
-        },
+        "type": "bottom_nav",
+        "id": "cinema_bottom_nav",
         "style": {
-          "fontSize": 22,
-          "fontWeight": "bold",
-          "padding": 16,
-          "textColor": "#FFFFFFFF"
-        }
-      },
-      {
-        "type": "column",
-        "id": "rail_recommended",
-        "children": [
-          {
-            "type": "text",
-            "id": "recommended_title",
-            "props": {
-              "value": "Recommended For You"
-            },
-            "style": {
-              "fontSize": 18,
-              "fontWeight": "semibold",
-              "paddingHorizontal": 16,
-              "paddingVertical": 8,
-              "textColor": "#FFFFFFFF"
-            }
-          },
-          {
-            "type": "card",
-            "id": "recommended_card_golden_user_1_t1",
-            "style": {
-              "cornerRadius": 14,
-              "elevation": 4,
-              "margin": 12
-            },
-            "children": [
-              {
-                "type": "column",
-                "style": {
-                  "padding": 12
-                },
-                "children": [
-                  {
-                    "type": "image",
-                    "props": {
-                      "url": "https://picsum.photos/seed/golden_user_1_t1_poster/300/450",
-                      "variants": {
-                        "backdrop": "https://picsum.photos/seed/golden_user_1_t1_backdrop/1280/720",
-                        "hero": "https://picsum.photos/seed/golden_user_1_t1_hero/1920/640",
-                        "poster": "https://picsum.photos/seed/golden_user_1_t1_poster/300/450",
-                        "thumbnail_tiny": "https://picsum.photos/seed/golden_user_1_t1_thumb/120/180"
-                      }
-                    },
-                    "style": {
-                      "cornerRadius": 12,
-                      "height": 180
-                    }
-                  },
-                  {
-                    "type": "spacer",
-                    "props": {
-                      "height": 8
-                    }
-                  },
-                  {
-                    "type": "text",
-                    "id": "recommended_text_golden_user_1_t1",
-                    "props": {
-                      "value": "Title golden_user_1_t1"
-                    },
-                    "style": {
-                      "fontSize": 16,
-                      "fontWeight": "medium"
-                    }
-                  },
-                  {
-                    "type": "spacer",
-                    "props": {
-                      "height": 8
-                    }
-                  },
-                  {
-                    "type": "button",
-                    "props": {
-                      "action": {
-                        "params": {
-                          "id": "golden_user_1_t1"
-                        },
-                        "route": "/details",
-                        "type": "Navigate"
-                      },
-                      "label": "Open details"
-                    }
-                  }
-                ]
-              }
-            ],
-            "analytics": {
-              "content_id": "golden_user_1_t1",
-              "impression": "content_card",
-              "section_id": "recommended"
-            }
-          },
-          {
-            "type": "card",
-            "id": "recommended_card_golden_user_1_r2",
-            "style": {
-              "cornerRadius": 14,
-              "elevation": 4,
-              "margin": 12
-            },
-            "children": [
-              {
-                "type": "column",
-                "style": {
-                  "padding": 12
-                },
-                "children": [
-                  {
-                    "type": "image",
-                    "props": {
-                      "url": "https://picsum.photos/seed/golden_user_1_r2_poster/300/450",
-                      "variants": {
-                        "backdrop": "https://picsum.photos/seed/golden_user_1_r2_backdrop/1280/720",
-                        "hero": "https://picsum.photos/seed/golden_user_1_r2_hero/1920/640",
-                        "poster": "https://picsum.photos/seed/golden_user_1_r2_poster/300/450",
-                        "thumbnail_tiny": "https://picsum.photos/seed/golden_user_1_r2_thumb/120/180"
-                      }
-                    },
-                    "style": {
-                      "cornerRadius": 12,
-                      "height": 180
-                    }
-                  },
-                  {
-                    "type": "spacer",
-                    "props": {
-                      "height": 8
-                    }
-                  },
-                  {
-                    "type": "text",
-                    "id": "recommended_text_golden_user_1_r2",
-                    "props": {
-                      "value": "Title golden_user_1_r2"
-                    },
-                    "style": {
-                      "fontSize": 16,
-                      "fontWeight": "medium"
-                    }
-                  },
-                  {
-                    "type": "spacer",
-                    "props": {
-                      "height": 8
-                    }
-                  },
-                  {
-                    "type": "button",
-                    "props": {
-                      "action": {
-                        "params": {
-                          "id": "golden_user_1_r2"
-                        },
-                        "route": "/details",
-                        "type": "Navigate"
-                      },
-                      "label": "Open details"
-                    }
-                  }
-                ]
-              }
-            ],
-            "analytics": {
-              "content_id": "golden_user_1_r2",
-              "impression": "content_card",
-              "section_id": "recommended"
-            }
-          },
-          {
-            "type": "card",
-            "id": "recommended_card_golden_user_1_r3",
-            "style": {
-              "cornerRadius": 14,
-              "elevation": 4,
-              "margin": 12
-            },
-            "children": [
-              {
-                "type": "column",
-                "style": {
-                  "padding": 12
-                },
-                "children": [
-                  {
-                    "type": "image",
-                    "props": {
-                      "url": "https://picsum.photos/seed/golden_user_1_r3_poster/300/450",
-                      "variants": {
-                        "backdrop": "https://picsum.photos/seed/golden_user_1_r3_backdrop/1280/720",
-                        "hero": "https://picsum.photos/seed/golden_user_1_r3_hero/1920/640",
-                        "poster": "https://picsum.photos/seed/golden_user_1_r3_poster/300/450",
-                        "thumbnail_tiny": "https://picsum.photos/seed/golden_user_1_r3_thumb/120/180"
-                      }
-                    },
-                    "style": {
-                      "cornerRadius": 12,
-                      "height": 180
-                    }
-                  },
-                  {
-                    "type": "spacer",
-                    "props": {
-                      "height": 8
-                    }
-                  },
-                  {
-                    "type": "text",
-                    "id": "recommended_text_golden_user_1_r3",
-                    "props": {
-                      "value": "Title golden_user_1_r3"
-                    },
-                    "style": {
-                      "fontSize": 16,
-                      "fontWeight": "medium"
-                    }
-                  },
-                  {
-                    "type": "spacer",
-                    "props": {
-                      "height": 8
-                    }
-                  },
-                  {
-                    "type": "button",
-                    "props": {
-                      "action": {
-                        "params": {
-                          "id": "golden_user_1_r3"
-                        },
-                        "route": "/details",
-                        "type": "Navigate"
-                      },
-                      "label": "Open details"
-                    }
-                  }
-                ]
-              }
-            ],
-            "analytics": {
-              "content_id": "golden_user_1_r3",
-              "impression": "content_card",
-              "section_id": "recommended"
-            }
-          },
-          {
-            "type": "card",
-            "id": "recommended_card_golden_user_1_r4",
-            "style": {
-              "cornerRadius": 14,
-              "elevation": 4,
-              "margin": 12
-            },
-            "children": [
-              {
-                "type": "column",
-                "style": {
-                  "padding": 12
-                },
-                "children": [
-                  {
-                    "type": "image",
-                    "props": {
-                      "url": "https://picsum.photos/seed/golden_user_1_r4_poster/300/450",
-                      "variants": {
-                        "backdrop": "https://picsum.photos/seed/golden_user_1_r4_backdrop/1280/720",
-                        "hero": "https://picsum.photos/seed/golden_user_1_r4_hero/1920/640",
-                        "poster": "https://picsum.photos/seed/golden_user_1_r4_poster/300/450",
-                        "thumbnail_tiny": "https://picsum.photos/seed/golden_user_1_r4_thumb/120/180"
-                      }
-                    },
-                    "style": {
-                      "cornerRadius": 12,
-                      "height": 180
-                    }
-                  },
-                  {
-                    "type": "spacer",
-                    "props": {
-                      "height": 8
-                    }
-                  },
-                  {
-                    "type": "text",
-                    "id": "recommended_text_golden_user_1_r4",
-                    "props": {
-                      "value": "Title golden_user_1_r4"
-                    },
-                    "style": {
-                      "fontSize": 16,
-                      "fontWeight": "medium"
-                    }
-                  },
-                  {
-                    "type": "spacer",
-                    "props": {
-                      "height": 8
-                    }
-                  },
-                  {
-                    "type": "button",
-                    "props": {
-                      "action": {
-                        "params": {
-                          "id": "golden_user_1_r4"
-                        },
-                        "route": "/details",
-                        "type": "Navigate"
-                      },
-                      "label": "Open details"
-                    }
-                  }
-                ]
-              }
-            ],
-            "analytics": {
-              "content_id": "golden_user_1_r4",
-              "impression": "content_card",
-              "section_id": "recommended"
-            }
-          },
-          {
-            "type": "button",
-            "id": "recommended_load_more",
-            "props": {
-              "action": {
-                "endpoint": "/section/recommended",
-                "method": "GET",
-                "type": "ApiCall"
-              },
-              "disabledLabel": "No more",
-              "enabledKey": "enabled:section:recommended",
-              "label": "Load more",
-              "loadingKey": "loading:section:recommended"
-            },
-            "style": {
-              "backgroundColor": "#FF1DB954",
-              "cornerRadius": 10,
-              "margin": 16,
-              "paddingHorizontal": 8,
-              "paddingVertical": 6
-            },
-            "analytics": {
-              "event": "load_more_click",
-              "section_id": "recommended"
-            }
-          }
-        ],
-        "analytics": {
-          "rail_id": "recommended"
+          "backgroundColor": "#CC0A0A0A",
+          "blurDp": 24,
+          "elevation": 8
         },
-        "gating": {
-          "experiment": "reco_rail_v2",
-          "variant": "variant_b"
-        }
-      },
-      {
-        "type": "column",
-        "id": "rail_continue_watching",
         "children": [
           {
-            "type": "text",
-            "id": "continue_watching_title",
-            "props": {
-              "value": "Continue Watching"
-            },
-            "style": {
-              "fontSize": 18,
-              "fontWeight": "semibold",
-              "paddingHorizontal": 16,
-              "paddingVertical": 8,
-              "textColor": "#FFFFFFFF"
-            }
-          },
-          {
-            "type": "card",
-            "id": "continue_watching_card_golden_user_1_c1",
-            "style": {
-              "cornerRadius": 14,
-              "elevation": 4,
-              "margin": 12
-            },
-            "children": [
-              {
-                "type": "column",
-                "style": {
-                  "padding": 12
-                },
-                "children": [
-                  {
-                    "type": "image",
-                    "props": {
-                      "url": "https://picsum.photos/seed/golden_user_1_c1_poster/300/450",
-                      "variants": {
-                        "backdrop": "https://picsum.photos/seed/golden_user_1_c1_backdrop/1280/720",
-                        "hero": "https://picsum.photos/seed/golden_user_1_c1_hero/1920/640",
-                        "poster": "https://picsum.photos/seed/golden_user_1_c1_poster/300/450",
-                        "thumbnail_tiny": "https://picsum.photos/seed/golden_user_1_c1_thumb/120/180"
-                      }
-                    },
-                    "style": {
-                      "cornerRadius": 12,
-                      "height": 180
-                    }
-                  },
-                  {
-                    "type": "spacer",
-                    "props": {
-                      "height": 8
-                    }
-                  },
-                  {
-                    "type": "text",
-                    "id": "continue_watching_text_golden_user_1_c1",
-                    "props": {
-                      "value": "Title golden_user_1_c1"
-                    },
-                    "style": {
-                      "fontSize": 16,
-                      "fontWeight": "medium"
-                    }
-                  },
-                  {
-                    "type": "spacer",
-                    "props": {
-                      "height": 8
-                    }
-                  },
-                  {
-                    "type": "button",
-                    "props": {
-                      "action": {
-                        "params": {
-                          "id": "golden_user_1_c1"
-                        },
-                        "route": "/details",
-                        "type": "Navigate"
-                      },
-                      "label": "Open details"
-                    }
-                  }
-                ]
-              }
-            ],
-            "analytics": {
-              "content_id": "golden_user_1_c1",
-              "impression": "content_card",
-              "section_id": "continue_watching"
-            }
-          },
-          {
-            "type": "card",
-            "id": "continue_watching_card_golden_user_1_c2",
-            "style": {
-              "cornerRadius": 14,
-              "elevation": 4,
-              "margin": 12
-            },
-            "children": [
-              {
-                "type": "column",
-                "style": {
-                  "padding": 12
-                },
-                "children": [
-                  {
-                    "type": "image",
-                    "props": {
-                      "url": "https://picsum.photos/seed/golden_user_1_c2_poster/300/450",
-                      "variants": {
-                        "backdrop": "https://picsum.photos/seed/golden_user_1_c2_backdrop/1280/720",
-                        "hero": "https://picsum.photos/seed/golden_user_1_c2_hero/1920/640",
-                        "poster": "https://picsum.photos/seed/golden_user_1_c2_poster/300/450",
-                        "thumbnail_tiny": "https://picsum.photos/seed/golden_user_1_c2_thumb/120/180"
-                      }
-                    },
-                    "style": {
-                      "cornerRadius": 12,
-                      "height": 180
-                    }
-                  },
-                  {
-                    "type": "spacer",
-                    "props": {
-                      "height": 8
-                    }
-                  },
-                  {
-                    "type": "text",
-                    "id": "continue_watching_text_golden_user_1_c2",
-                    "props": {
-                      "value": "Title golden_user_1_c2"
-                    },
-                    "style": {
-                      "fontSize": 16,
-                      "fontWeight": "medium"
-                    }
-                  },
-                  {
-                    "type": "spacer",
-                    "props": {
-                      "height": 8
-                    }
-                  },
-                  {
-                    "type": "button",
-                    "props": {
-                      "action": {
-                        "params": {
-                          "id": "golden_user_1_c2"
-                        },
-                        "route": "/details",
-                        "type": "Navigate"
-                      },
-                      "label": "Open details"
-                    }
-                  }
-                ]
-              }
-            ],
-            "analytics": {
-              "content_id": "golden_user_1_c2",
-              "impression": "content_card",
-              "section_id": "continue_watching"
-            }
-          },
-          {
-            "type": "card",
-            "id": "continue_watching_card_golden_user_1_c3",
-            "style": {
-              "cornerRadius": 14,
-              "elevation": 4,
-              "margin": 12
-            },
-            "children": [
-              {
-                "type": "column",
-                "style": {
-                  "padding": 12
-                },
-                "children": [
-                  {
-                    "type": "image",
-                    "props": {
-                      "url": "https://picsum.photos/seed/golden_user_1_c3_poster/300/450",
-                      "variants": {
-                        "backdrop": "https://picsum.photos/seed/golden_user_1_c3_backdrop/1280/720",
-                        "hero": "https://picsum.photos/seed/golden_user_1_c3_hero/1920/640",
-                        "poster": "https://picsum.photos/seed/golden_user_1_c3_poster/300/450",
-                        "thumbnail_tiny": "https://picsum.photos/seed/golden_user_1_c3_thumb/120/180"
-                      }
-                    },
-                    "style": {
-                      "cornerRadius": 12,
-                      "height": 180
-                    }
-                  },
-                  {
-                    "type": "spacer",
-                    "props": {
-                      "height": 8
-                    }
-                  },
-                  {
-                    "type": "text",
-                    "id": "continue_watching_text_golden_user_1_c3",
-                    "props": {
-                      "value": "Title golden_user_1_c3"
-                    },
-                    "style": {
-                      "fontSize": 16,
-                      "fontWeight": "medium"
-                    }
-                  },
-                  {
-                    "type": "spacer",
-                    "props": {
-                      "height": 8
-                    }
-                  },
-                  {
-                    "type": "button",
-                    "props": {
-                      "action": {
-                        "params": {
-                          "id": "golden_user_1_c3"
-                        },
-                        "route": "/details",
-                        "type": "Navigate"
-                      },
-                      "label": "Open details"
-                    }
-                  }
-                ]
-              }
-            ],
-            "analytics": {
-              "content_id": "golden_user_1_c3",
-              "impression": "content_card",
-              "section_id": "continue_watching"
-            }
-          },
-          {
-            "type": "button",
-            "id": "continue_watching_load_more",
+            "type": "nav_item",
+            "id": "nav_home",
             "props": {
               "action": {
-                "endpoint": "/section/continue_watching",
-                "method": "GET",
-                "type": "ApiCall"
+                "route": "/home",
+                "type": "Navigate"
               },
-              "disabledLabel": "No more",
-              "enabledKey": "enabled:section:continue_watching",
-              "label": "Load more",
-              "loadingKey": "loading:section:continue_watching"
-            },
-            "style": {
-              "backgroundColor": "#FF1DB954",
-              "cornerRadius": 10,
-              "margin": 16,
-              "paddingHorizontal": 8,
-              "paddingVertical": 6
-            },
-            "analytics": {
-              "event": "load_more_click",
-              "section_id": "continue_watching"
-            }
-          }
-        ],
-        "analytics": {
-          "rail_id": "continue_watching"
-        }
-      },
-      {
-        "type": "column",
-        "id": "rail_trending",
-        "children": [
-          {
-            "type": "text",
-            "id": "trending_title",
-            "props": {
-              "value": "Trending Now"
-            },
-            "style": {
-              "fontSize": 18,
-              "fontWeight": "semibold",
-              "paddingHorizontal": 16,
-              "paddingVertical": 8,
-              "textColor": "#FFFFFFFF"
+              "icon": "🏠",
+              "label": "Home",
+              "selected": true
             }
           },
           {
-            "type": "card",
-            "id": "trending_card_golden_user_1_t2",
-            "style": {
-              "cornerRadius": 14,
-              "elevation": 4,
-              "margin": 12
-            },
-            "children": [
-              {
-                "type": "column",
-                "style": {
-                  "padding": 12
-                },
-                "children": [
-                  {
-                    "type": "image",
-                    "props": {
-                      "url": "https://picsum.photos/seed/golden_user_1_t2_poster/300/450",
-                      "variants": {
-                        "backdrop": "https://picsum.photos/seed/golden_user_1_t2_backdrop/1280/720",
-                        "hero": "https://picsum.photos/seed/golden_user_1_t2_hero/1920/640",
-                        "poster": "https://picsum.photos/seed/golden_user_1_t2_poster/300/450",
-                        "thumbnail_tiny": "https://picsum.photos/seed/golden_user_1_t2_thumb/120/180"
-                      }
-                    },
-                    "style": {
-                      "cornerRadius": 12,
-                      "height": 180
-                    }
-                  },
-                  {
-                    "type": "spacer",
-                    "props": {
-                      "height": 8
-                    }
-                  },
-                  {
-                    "type": "text",
-                    "id": "trending_text_golden_user_1_t2",
-                    "props": {
-                      "value": "Title golden_user_1_t2"
-                    },
-                    "style": {
-                      "fontSize": 16,
-                      "fontWeight": "medium"
-                    }
-                  },
-                  {
-                    "type": "spacer",
-                    "props": {
-                      "height": 8
-                    }
-                  },
-                  {
-                    "type": "button",
-                    "props": {
-                      "action": {
-                        "params": {
-                          "id": "golden_user_1_t2"
-                        },
-                        "route": "/details",
-                        "type": "Navigate"
-                      },
-                      "label": "Open details"
-                    }
-                  }
-                ]
-              }
-            ],
-            "analytics": {
-              "content_id": "golden_user_1_t2",
-              "impression": "content_card",
-              "section_id": "trending"
-            }
-          },
-          {
-            "type": "card",
-            "id": "trending_card_golden_user_1_t3",
-            "style": {
-              "cornerRadius": 14,
-              "elevation": 4,
-              "margin": 12
-            },
-            "children": [
-              {
-                "type": "column",
-                "style": {
-                  "padding": 12
-                },
-                "children": [
-                  {
-                    "type": "image",
-                    "props": {
-                      "url": "https://picsum.photos/seed/golden_user_1_t3_poster/300/450",
-                      "variants": {
-                        "backdrop": "https://picsum.photos/seed/golden_user_1_t3_backdrop/1280/720",
-                        "hero": "https://picsum.photos/seed/golden_user_1_t3_hero/1920/640",
-                        "poster": "https://picsum.photos/seed/golden_user_1_t3_poster/300/450",
-                        "thumbnail_tiny": "https://picsum.photos/seed/golden_user_1_t3_thumb/120/180"
-                      }
-                    },
-                    "style": {
-                      "cornerRadius": 12,
-                      "height": 180
-                    }
-                  },
-                  {
-                    "type": "spacer",
-                    "props": {
-                      "height": 8
-                    }
-                  },
-                  {
-                    "type": "text",
-                    "id": "trending_text_golden_user_1_t3",
-                    "props": {
-                      "value": "Title golden_user_1_t3"
-                    },
-                    "style": {
-                      "fontSize": 16,
-                      "fontWeight": "medium"
-                    }
-                  },
-                  {
-                    "type": "spacer",
-                    "props": {
-                      "height": 8
-                    }
-                  },
-                  {
-                    "type": "button",
-                    "props": {
-                      "action": {
-                        "params": {
-                          "id": "golden_user_1_t3"
-                        },
-                        "route": "/details",
-                        "type": "Navigate"
-                      },
-                      "label": "Open details"
-                    }
-                  }
-                ]
-              }
-            ],
-            "analytics": {
-              "content_id": "golden_user_1_t3",
-              "impression": "content_card",
-              "section_id": "trending"
-            }
-          },
-          {
-            "type": "card",
-            "id": "trending_card_golden_user_1_t4",
-            "style": {
-              "cornerRadius": 14,
-              "elevation": 4,
-              "margin": 12
-            },
-            "children": [
-              {
-                "type": "column",
-                "style": {
-                  "padding": 12
-                },
-                "children": [
-                  {
-                    "type": "image",
-                    "props": {
-                      "url": "https://picsum.photos/seed/golden_user_1_t4_poster/300/450",
-                      "variants": {
-                        "backdrop": "https://picsum.photos/seed/golden_user_1_t4_backdrop/1280/720",
-                        "hero": "https://picsum.photos/seed/golden_user_1_t4_hero/1920/640",
-                        "poster": "https://picsum.photos/seed/golden_user_1_t4_poster/300/450",
-                        "thumbnail_tiny": "https://picsum.photos/seed/golden_user_1_t4_thumb/120/180"
-                      }
-                    },
-                    "style": {
-                      "cornerRadius": 12,
-                      "height": 180
-                    }
-                  },
-                  {
-                    "type": "spacer",
-                    "props": {
-                      "height": 8
-                    }
-                  },
-                  {
-                    "type": "text",
-                    "id": "trending_text_golden_user_1_t4",
-                    "props": {
-                      "value": "Title golden_user_1_t4"
-                    },
-                    "style": {
-                      "fontSize": 16,
-                      "fontWeight": "medium"
-                    }
-                  },
-                  {
-                    "type": "spacer",
-                    "props": {
-                      "height": 8
-                    }
-                  },
-                  {
-                    "type": "button",
-                    "props": {
-                      "action": {
-                        "params": {
-                          "id": "golden_user_1_t4"
-                        },
-                        "route": "/details",
-                        "type": "Navigate"
-                      },
-                      "label": "Open details"
-                    }
-                  }
-                ]
-              }
-            ],
-            "analytics": {
-              "content_id": "golden_user_1_t4",
-              "impression": "content_card",
-              "section_id": "trending"
-            }
-          },
-          {
-            "type": "card",
-            "id": "trending_card_golden_user_1_t5",
-            "style": {
-              "cornerRadius": 14,
-              "elevation": 4,
-              "margin": 12
-            },
-            "children": [
-              {
-                "type": "column",
-                "style": {
-                  "padding": 12
-                },
-                "children": [
-                  {
-                    "type": "image",
-                    "props": {
-                      "url": "https://picsum.photos/seed/golden_user_1_t5_poster/300/450",
-                      "variants": {
-                        "backdrop": "https://picsum.photos/seed/golden_user_1_t5_backdrop/1280/720",
-                        "hero": "https://picsum.photos/seed/golden_user_1_t5_hero/1920/640",
-                        "poster": "https://picsum.photos/seed/golden_user_1_t5_poster/300/450",
-                        "thumbnail_tiny": "https://picsum.photos/seed/golden_user_1_t5_thumb/120/180"
-                      }
-                    },
-                    "style": {
-                      "cornerRadius": 12,
-                      "height": 180
-                    }
-                  },
-                  {
-                    "type": "spacer",
-                    "props": {
-                      "height": 8
-                    }
-                  },
-                  {
-                    "type": "text",
-                    "id": "trending_text_golden_user_1_t5",
-                    "props": {
-                      "value": "Title golden_user_1_t5"
-                    },
-                    "style": {
-                      "fontSize": 16,
-                      "fontWeight": "medium"
-                    }
-                  },
-                  {
-                    "type": "spacer",
-                    "props": {
-                      "height": 8
-                    }
-                  },
-                  {
-                    "type": "button",
-                    "props": {
-                      "action": {
-                        "params": {
-                          "id": "golden_user_1_t5"
-                        },
-                        "route": "/details",
-                        "type": "Navigate"
-                      },
-                      "label": "Open details"
-                    }
-                  }
-                ]
-              }
-            ],
-            "analytics": {
-              "content_id": "golden_user_1_t5",
-              "impression": "content_card",
-              "section_id": "trending"
-            }
-          },
-          {
-            "type": "button",
-            "id": "trending_load_more",
+            "type": "nav_item",
+            "id": "nav_new",
             "props": {
               "action": {
-                "endpoint": "/section/trending",
-                "method": "GET",
-                "type": "ApiCall"
+                "route": "/new",
+                "type": "Navigate"
               },
-              "disabledLabel": "No more",
-              "enabledKey": "enabled:section:trending",
-              "label": "Load more",
-              "loadingKey": "loading:section:trending"
-            },
-            "style": {
-              "backgroundColor": "#FF1DB954",
-              "cornerRadius": 10,
-              "margin": 16,
-              "paddingHorizontal": 8,
-              "paddingVertical": 6
-            },
-            "analytics": {
-              "event": "load_more_click",
-              "section_id": "trending"
+              "icon": "✨",
+              "label": "New",
+              "selected": false
+            }
+          },
+          {
+            "type": "nav_item",
+            "id": "nav_search",
+            "props": {
+              "action": {
+                "route": "/search",
+                "type": "Navigate"
+              },
+              "icon": "🔍",
+              "label": "Search",
+              "selected": false
+            }
+          },
+          {
+            "type": "nav_item",
+            "id": "nav_downloads",
+            "props": {
+              "action": {
+                "route": "/downloads",
+                "type": "Navigate"
+              },
+              "icon": "⬇",
+              "label": "Downloads",
+              "selected": false
             }
           }
-        ],
-        "analytics": {
-          "rail_id": "trending"
-        }
+        ]
       }
     ]
   },

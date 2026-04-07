@@ -39,6 +39,15 @@ object StyleParser {
             gradientToColor = styleMap["gradientToColor"] as? String,
             gradientFromAlpha = styleMap.floatOrNull("gradientFromAlpha"),
             gradientToAlpha = styleMap.floatOrNull("gradientToAlpha"),
+            gradientViaColor = styleMap["gradientViaColor"] as? String,
+            gradientViaAlpha = styleMap.floatOrNull("gradientViaAlpha"),
+            gradientDirection = styleMap["gradientDirection"] as? String,
+            letterSpacing = styleMap.floatOrNull("letterSpacing"),
+            layoutAlign = styleMap["layoutAlign"] as? String,
+            weight = styleMap.floatOrNull("weight"),
+            horizontalArrangement = styleMap["horizontalArrangement"] as? String,
+            columnHorizontalAlignment = styleMap["columnHorizontalAlignment"] as? String,
+            verticalArrangement = styleMap["verticalArrangement"] as? String,
         )
     }
 

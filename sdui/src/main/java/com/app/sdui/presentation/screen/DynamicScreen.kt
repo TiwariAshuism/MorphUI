@@ -60,22 +60,24 @@ fun DynamicScreen(
                 }
             }
 
-            ComposeRenderer.RenderComponent(
-                component = state.component,
-                formState = formState,
-                onStateChange = viewModel::updateFormState,
-                onAction = { action ->
-                    when (action) {
-                        is UIAction.Navigate -> onNavigate(action.route, action.params)
-                        is UIAction.OpenUrl -> viewModel.handleOpenUrl(action.url)
-                        is UIAction.ShowToast -> viewModel.handleShowToast(action.message)
-                        is UIAction.Back -> onBack()
-                        is UIAction.ApiCall -> viewModel.handleApiCall(action)
-                        is UIAction.Custom -> viewModel.handleCustomAction(action)
-                        UIAction.None -> {}
+            Box(modifier = Modifier.fillMaxSize()) {
+                ComposeRenderer.RenderComponent(
+                    component = state.component,
+                    formState = formState,
+                    onStateChange = viewModel::updateFormState,
+                    onAction = { action ->
+                        when (action) {
+                            is UIAction.Navigate -> onNavigate(action.route, action.params)
+                            is UIAction.OpenUrl -> viewModel.handleOpenUrl(action.url)
+                            is UIAction.ShowToast -> viewModel.handleShowToast(action.message)
+                            is UIAction.Back -> onBack()
+                            is UIAction.ApiCall -> viewModel.handleApiCall(action)
+                            is UIAction.Custom -> viewModel.handleCustomAction(action)
+                            UIAction.None -> {}
+                        }
                     }
-                }
-            )
+                )
+            }
         }
 
         is ScreenViewModel.UiState.Error -> {

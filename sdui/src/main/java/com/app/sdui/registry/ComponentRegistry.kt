@@ -144,6 +144,14 @@ class ComponentRegistry {
             )
         }
 
+        register("box") { _, children, style, id ->
+            BoxComponent(
+                children = children,
+                id = id,
+                style = style,
+            )
+        }
+
         register("spacer") { props, _, style, id ->
             SpacerComponent(
                 height = (props["height"] as? Number)?.toFloat(),
@@ -190,9 +198,21 @@ class ComponentRegistry {
             )
         }
 
-        register("list") { _, children, style, id ->
+        register("list") { props, children, style, id ->
             ListComponent(
                 children = children,
+                contentPaddingBottomDp = (props["contentPaddingBottomDp"] as? Number)?.toFloat(),
+                id = id,
+                style = style,
+            )
+        }
+
+        register("nav_item") { props, _, style, id ->
+            NavBarItemComponent(
+                label = props["label"] as? String ?: "",
+                icon = props["icon"] as? String ?: "",
+                selected = props["selected"] as? Boolean ?: false,
+                action = ActionParser.parse(props["action"]),
                 id = id,
                 style = style,
             )

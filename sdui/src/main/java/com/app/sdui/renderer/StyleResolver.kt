@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.alpha
@@ -61,11 +62,33 @@ object StyleResolver {
         val radius = cornerRadius?.dp ?: 0.dp
         val gf = parseColor(gradientFromColor)
         val gt = parseColor(gradientToColor)
+        val gv = parseColor(gradientViaColor)
         if (gf != null && gt != null) {
             val from = gf.copy(alpha = gradientFromAlpha ?: gf.alpha)
             val to = gt.copy(alpha = gradientToAlpha ?: gt.alpha)
+            val via = gv?.copy(alpha = gradientViaAlpha ?: gv.alpha)
+            val isHorizontal = gradientDirection?.equals("horizontal", ignoreCase = true) == true
+            val brush = when {
+                via != null -> {
+                    if (isHorizontal) {
+                        Brush.horizontalGradient(
+                            0f to from,
+                            0.5f to via,
+                            1f to to,
+                        )
+                    } else {
+                        Brush.verticalGradient(
+                            0f to from,
+                            0.5f to via,
+                            1f to to,
+                        )
+                    }
+                }
+                isHorizontal -> Brush.horizontalGradient(colors = listOf(from, to))
+                else -> Brush.verticalGradient(colors = listOf(from, to))
+            }
             modifier = modifier.background(
-                brush = Brush.verticalGradient(listOf(from, to)),
+                brush = brush,
                 shape = RoundedCornerShape(radius),
             )
         }
@@ -118,10 +141,11 @@ object StyleResolver {
         if (this == null) return TextStyle.Default
 
         return TextStyle.Default.copy(
-            color = parseColor(textColor) ?: Color.Unspecified,
+            color = parseColor(textColor) ?: Color.Black,
             fontSize = fontSize?.sp ?: TextStyle.Default.fontSize,
             fontWeight = parseFontWeight(fontWeight),
-            textAlign = parseTextAlign(textAlign) ?: TextStyle.Default.textAlign
+            textAlign = parseTextAlign(textAlign) ?: TextStyle.Default.textAlign,
+            letterSpacing = letterSpacing?.sp ?: TextStyle.Default.letterSpacing,
         )
     }
 
@@ -136,6 +160,56 @@ object StyleResolver {
     fun UIStyle?.fontWeight(): FontWeight? = parseFontWeight(this?.fontWeight)
 
     fun UIStyle?.textAlign(): TextAlign? = parseTextAlign(this?.textAlign)
+
+    fun parseHorizontalArrangement(s: String?): Arrangement.Horizontal {
+        return when (s?.lowercase()) {
+            "center" -> Arrangement.Center
+            "end" -> Arrangement.End
+            "spacebetween" -> Arrangement.SpaceBetween
+            "spaceevenly" -> Arrangement.SpaceEvenly
+            "spacearound" -> Arrangement.SpaceAround
+            "spacedby" -> Arrangement.spacedBy(8.dp)
+            else -> Arrangement.Start
+        }
+    }
+
+    fun parseColumnHorizontalAlignment(s: String?): Alignment.Horizontal {
+        return when (s?.lowercase()) {
+            "center" -> Alignment.CenterHorizontally
+            "end" -> Alignment.End
+            else -> Alignment.Start
+        }
+    }
+
+    fun parseVerticalArrangement(s: String?): Arrangement.Vertical {
+        return when (s?.lowercase()) {
+            "center" -> Arrangement.Center
+            "end", "bottom" -> Arrangement.Bottom
+            "spacebetween" -> Arrangement.SpaceBetween
+            "spaceevenly" -> Arrangement.SpaceEvenly
+            "spacearound" -> Arrangement.SpaceAround
+            else -> Arrangement.Top
+        }
+    }
+
+    /**
+     * BoxScope alignment for a child (omit for [layoutAlign] `fill`).
+     */
+    fun parseBoxLayoutAlign(layoutAlign: String?): Alignment? {
+        return when (layoutAlign?.lowercase()) {
+            "fill" -> null
+            "bottomstart" -> Alignment.BottomStart
+            "bottomcenter" -> Alignment.BottomCenter
+            "bottomend" -> Alignment.BottomEnd
+            "topstart" -> Alignment.TopStart
+            "topcenter" -> Alignment.TopCenter
+            "topend" -> Alignment.TopEnd
+            "center" -> Alignment.Center
+            "centerstart" -> Alignment.CenterStart
+            "centerend" -> Alignment.CenterEnd
+            else -> null
+        }
+    }
 
     // ──────────────────────────────────────────────
     // Internal helpers
