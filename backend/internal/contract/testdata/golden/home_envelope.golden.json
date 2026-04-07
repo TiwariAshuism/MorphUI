@@ -18,7 +18,78 @@
   "screen": {
     "type": "list",
     "id": "home_root_list",
+    "style": {
+      "backgroundColor": "#FF131313"
+    },
     "children": [
+      {
+        "type": "column",
+        "id": "cinema_app_bar",
+        "style": {
+          "backgroundColor": "#59131313",
+          "blurDp": 12,
+          "paddingHorizontal": 16,
+          "paddingVertical": 6,
+          "zIndex": 10
+        },
+        "children": [
+          {
+            "type": "row",
+            "id": "cinema_app_bar_row",
+            "style": {
+              "paddingVertical": 4
+            },
+            "children": [
+              {
+                "type": "text",
+                "id": "cinema_logo",
+                "props": {
+                  "value": "CINEMA"
+                },
+                "style": {
+                  "fontSize": 18,
+                  "fontWeight": "bold",
+                  "textColor": "#FFFFFFFF"
+                }
+              },
+              {
+                "type": "spacer",
+                "props": {
+                  "width": 16
+                }
+              },
+              {
+                "type": "icon_button",
+                "id": "cinema_search",
+                "props": {
+                  "action": {
+                    "route": "/search",
+                    "type": "Navigate"
+                  },
+                  "icon": "🔍"
+                },
+                "style": {
+                  "textColor": "#FFFFFFFF"
+                }
+              },
+              {
+                "type": "icon_button",
+                "id": "cinema_profile",
+                "props": {
+                  "action": {
+                    "route": "/profile",
+                    "type": "Navigate"
+                  },
+                  "icon": "👤"
+                },
+                "style": {
+                  "textColor": "#FFFFFFFF"
+                }
+              }
+            ]
+          }
+        ]
+      },
       {
         "type": "column",
         "id": "home_hero",
@@ -28,7 +99,7 @@
             "id": "hero_card",
             "style": {
               "cornerRadius": 16,
-              "elevation": 6,
+              "elevation": 8,
               "margin": 12
             },
             "children": [
@@ -48,113 +119,122 @@
                     },
                     "style": {
                       "cornerRadius": 12,
-                      "height": 220
+                      "height": 280
                     }
                   },
                   {
-                    "type": "spacer",
-                    "props": {
-                      "height": 12
-                    }
-                  },
-                  {
-                    "type": "text",
-                    "id": "hero_kicker",
-                    "props": {
-                      "value": "Featured for User golden_user_1"
-                    },
+                    "type": "column",
                     "style": {
-                      "fontSize": 14,
-                      "fontWeight": "medium",
-                      "paddingHorizontal": 12
-                    }
-                  },
-                  {
-                    "type": "text",
-                    "id": "hero_title",
-                    "props": {
-                      "value": "Title golden_user_1_t2"
-                    },
-                    "style": {
-                      "fontSize": 22,
-                      "fontWeight": "bold",
-                      "paddingHorizontal": 12,
-                      "paddingVertical": 6
-                    }
-                  },
-                  {
-                    "type": "text",
-                    "id": "hero_subtitle",
-                    "props": {
-                      "value": "Because you watched similar titles"
-                    },
-                    "style": {
-                      "fontSize": 14,
-                      "paddingHorizontal": 12
-                    }
-                  },
-                  {
-                    "type": "spacer",
-                    "props": {
-                      "height": 12
-                    }
-                  },
-                  {
-                    "type": "row",
-                    "id": "hero_actions",
-                    "style": {
-                      "paddingHorizontal": 12,
-                      "paddingVertical": 8
+                      "gradientFromAlpha": 0,
+                      "gradientFromColor": "#FF131313",
+                      "gradientToAlpha": 1,
+                      "gradientToColor": "#FF131313",
+                      "padding": 12
                     },
                     "children": [
                       {
-                        "type": "button",
+                        "type": "text",
+                        "id": "hero_kicker",
                         "props": {
-                          "action": {
-                            "params": {
-                              "id": "golden_user_1_t2"
-                            },
-                            "route": "/play",
-                            "type": "Navigate"
-                          },
-                          "label": "Play"
+                          "value": "Featured for User golden_user_1"
                         },
                         "style": {
-                          "backgroundColor": "#FFE50914",
-                          "cornerRadius": 8
+                          "fontSize": 14,
+                          "fontWeight": "medium",
+                          "paddingHorizontal": 0,
+                          "textColor": "#B3FFFFFF"
+                        }
+                      },
+                      {
+                        "type": "text",
+                        "id": "hero_title",
+                        "props": {
+                          "value": "Title golden_user_1_t2"
+                        },
+                        "style": {
+                          "fontSize": 22,
+                          "fontWeight": "bold",
+                          "paddingHorizontal": 0,
+                          "paddingVertical": 6,
+                          "textColor": "#FFFFFFFF"
+                        }
+                      },
+                      {
+                        "type": "text",
+                        "id": "hero_subtitle",
+                        "props": {
+                          "value": "Because you watched similar titles"
+                        },
+                        "style": {
+                          "fontSize": 14,
+                          "paddingHorizontal": 0,
+                          "textColor": "#CCFFFFFF"
                         }
                       },
                       {
                         "type": "spacer",
                         "props": {
-                          "width": 12
+                          "height": 12
                         }
                       },
                       {
-                        "type": "button",
-                        "props": {
-                          "action": {
-                            "body": {
-                              "content_id": "golden_user_1_t2"
-                            },
-                            "endpoint": "/api/mylist",
-                            "method": "POST",
-                            "type": "ApiCall"
-                          },
-                          "label": "My List"
-                        },
+                        "type": "row",
+                        "id": "hero_actions",
                         "style": {
-                          "backgroundColor": "#33FFFFFF",
-                          "cornerRadius": 8
+                          "paddingHorizontal": 0,
+                          "paddingVertical": 8
+                        },
+                        "children": [
+                          {
+                            "type": "button",
+                            "props": {
+                              "action": {
+                                "params": {
+                                  "id": "golden_user_1_t2"
+                                },
+                                "route": "/play",
+                                "type": "Navigate"
+                              },
+                              "label": "Play"
+                            },
+                            "style": {
+                              "backgroundColor": "#FFE50914",
+                              "cornerRadius": 8
+                            }
+                          },
+                          {
+                            "type": "spacer",
+                            "props": {
+                              "width": 12
+                            }
+                          },
+                          {
+                            "type": "button",
+                            "props": {
+                              "action": {
+                                "body": {
+                                  "content_id": "golden_user_1_t2"
+                                },
+                                "endpoint": "/api/mylist",
+                                "method": "POST",
+                                "type": "ApiCall"
+                              },
+                              "label": "My List"
+                            },
+                            "style": {
+                              "backgroundColor": "#33FFFFFF",
+                              "cornerRadius": 8
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "spacer",
+                        "props": {
+                          "height": 8
                         }
                       }
                     ]
-                  },
-                  {
-                    "type": "spacer",
-                    "props": {
-                      "height": 8
-                    }
                   }
                 ]
               }
@@ -175,7 +255,8 @@
         "style": {
           "fontSize": 22,
           "fontWeight": "bold",
-          "padding": 16
+          "padding": 16,
+          "textColor": "#FFFFFFFF"
         }
       },
       {
@@ -192,7 +273,8 @@
               "fontSize": 18,
               "fontWeight": "semibold",
               "paddingHorizontal": 16,
-              "paddingVertical": 8
+              "paddingVertical": 8,
+              "textColor": "#FFFFFFFF"
             }
           },
           {
@@ -548,7 +630,8 @@
               "fontSize": 18,
               "fontWeight": "semibold",
               "paddingHorizontal": 16,
-              "paddingVertical": 8
+              "paddingVertical": 8,
+              "textColor": "#FFFFFFFF"
             }
           },
           {
@@ -824,7 +907,8 @@
               "fontSize": 18,
               "fontWeight": "semibold",
               "paddingHorizontal": 16,
-              "paddingVertical": 8
+              "paddingVertical": 8,
+              "textColor": "#FFFFFFFF"
             }
           },
           {

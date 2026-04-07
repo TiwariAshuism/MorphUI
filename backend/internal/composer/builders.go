@@ -35,12 +35,12 @@ func buttonLoadMore(railID string) models.Component {
 		Type: "button",
 		ID:   railID + "_load_more",
 		Props: map[string]any{
-			"label":  "Load more",
+			"label": "Load more",
 			// Phase 6 UX: client can show a spinner/disable during pagination.
-			"loadingKey":  "loading:section:" + railID,
-			"enabledKey":  "enabled:section:" + railID,
+			"loadingKey":    "loading:section:" + railID,
+			"enabledKey":    "enabled:section:" + railID,
 			"disabledLabel": "No more",
-			"action": models.ApiCallAction("GET", "/section/"+railID).ToMap(),
+			"action":        models.ApiCallAction("GET", "/section/"+railID).ToMap(),
 		},
 		Style: map[string]any{
 			"margin":            16,
@@ -60,9 +60,9 @@ func imageVariantsProps(it clients.ContentItem) map[string]any {
 	return map[string]any{
 		"url": it.PosterMedium,
 		"variants": map[string]string{
-			"poster":        it.PosterMedium,
-			"backdrop":      it.Backdrop,
-			"hero":          it.Hero,
+			"poster":         it.PosterMedium,
+			"backdrop":       it.Backdrop,
+			"hero":           it.Hero,
 			"thumbnail_tiny": it.ThumbnailTiny,
 		},
 	}
@@ -124,6 +124,7 @@ func buildRailAsColumn(rail clients.Rail, byID map[string]clients.ContentItem, g
 		"paddingVertical":   8,
 		"fontSize":          18,
 		"fontWeight":        "semibold",
+		"textColor":         "#FFFFFFFF",
 	}))
 	for _, id := range rail.IDs {
 		if it, ok := byID[id]; ok {
@@ -142,6 +143,62 @@ func buildRailAsColumn(rail clients.Rail, byID map[string]clients.ContentItem, g
 		},
 	}
 	return col
+}
+
+// cinemaAppBar is a frosted top bar using SDUI style extensions (blurDp, zIndex).
+func cinemaAppBar() models.Component {
+	search := models.NavigateAction("/search", map[string]string{})
+	profile := models.NavigateAction("/profile", map[string]string{})
+	return models.Component{
+		Type: "column",
+		ID:   "cinema_app_bar",
+		Style: map[string]any{
+			"zIndex":            10,
+			"blurDp":            12,
+			"backgroundColor":   "#59131313",
+			"paddingHorizontal": 16,
+			"paddingVertical":   6,
+		},
+		Children: []models.Component{
+			{
+				Type: "row",
+				ID:   "cinema_app_bar_row",
+				Style: map[string]any{
+					"paddingVertical": 4,
+				},
+				Children: []models.Component{
+					textComponent("cinema_logo", "CINEMA", map[string]any{
+						"fontSize":   18,
+						"fontWeight": "bold",
+						"textColor":  "#FFFFFFFF",
+					}),
+					spacerHorizontal(16),
+					{
+						Type: "icon_button",
+						ID:   "cinema_search",
+						Props: map[string]any{
+							"icon":   "🔍",
+							"action": search.ToMap(),
+						},
+						Style: map[string]any{
+							"textColor": "#FFFFFFFF",
+						},
+					},
+					{
+						Type: "icon_button",
+						ID:   "cinema_profile",
+						Props: map[string]any{
+							"icon":   "👤",
+							"action": profile.ToMap(),
+						},
+						Style: map[string]any{
+							"textColor": "#FFFFFFFF",
+						},
+					},
+				},
+			},
+		},
+	}
 }
 
 // FallbackPageMinimal is shown when the client cannot render the primary tree (Phase 2 contract).
@@ -182,7 +239,7 @@ func heroBanner(it clients.ContentItem, displayName string) models.Component {
 				Style: map[string]any{
 					"margin":       12,
 					"cornerRadius": 16,
-					"elevation":    6,
+					"elevation":    8,
 				},
 				Children: []models.Component{
 					{
@@ -200,61 +257,75 @@ func heroBanner(it clients.ContentItem, displayName string) models.Component {
 									"contentDescription": it.Title,
 								},
 								Style: map[string]any{
-									"height":       220,
+									"height":       280,
 									"cornerRadius": 12,
 								},
 							},
-							spacerComponent(12),
-							textComponent("hero_kicker", "Featured for "+displayName, map[string]any{
-								"paddingHorizontal": 12,
-								"fontSize":          14,
-								"fontWeight":        "medium",
-							}),
-							textComponent("hero_title", it.Title, map[string]any{
-								"paddingHorizontal": 12,
-								"paddingVertical":   6,
-								"fontSize":          22,
-								"fontWeight":        "bold",
-							}),
-							textComponent("hero_subtitle", it.Subtitle, map[string]any{
-								"paddingHorizontal": 12,
-								"fontSize":          14,
-							}),
-							spacerComponent(12),
 							{
-								Type: "row",
-								ID:   "hero_actions",
+								Type: "column",
 								Style: map[string]any{
-									"paddingHorizontal": 12,
-									"paddingVertical":   8,
+									"gradientFromColor": "#FF131313",
+									"gradientToColor":   "#FF131313",
+									"gradientFromAlpha": 0,
+									"gradientToAlpha":   1,
+									"padding":           12,
 								},
 								Children: []models.Component{
+									textComponent("hero_kicker", "Featured for "+displayName, map[string]any{
+										"paddingHorizontal": 0,
+										"fontSize":          14,
+										"fontWeight":        "medium",
+										"textColor":         "#B3FFFFFF",
+									}),
+									textComponent("hero_title", it.Title, map[string]any{
+										"paddingHorizontal": 0,
+										"paddingVertical":   6,
+										"fontSize":          22,
+										"fontWeight":        "bold",
+										"textColor":         "#FFFFFFFF",
+									}),
+									textComponent("hero_subtitle", it.Subtitle, map[string]any{
+										"paddingHorizontal": 0,
+										"fontSize":          14,
+										"textColor":         "#CCFFFFFF",
+									}),
+									spacerComponent(12),
 									{
-										Type: "button",
-										Props: map[string]any{
-											"label":  "Play",
-											"action": play.ToMap(),
-										},
+										Type: "row",
+										ID:   "hero_actions",
 										Style: map[string]any{
-											"backgroundColor": "#FFE50914",
-											"cornerRadius":  8,
+											"paddingHorizontal": 0,
+											"paddingVertical":   8,
+										},
+										Children: []models.Component{
+											{
+												Type: "button",
+												Props: map[string]any{
+													"label":  "Play",
+													"action": play.ToMap(),
+												},
+												Style: map[string]any{
+													"backgroundColor": "#FFE50914",
+													"cornerRadius":    8,
+												},
+											},
+											spacerHorizontal(12),
+											{
+												Type: "button",
+												Props: map[string]any{
+													"label":  "My List",
+													"action": myList.ToMap(),
+												},
+												Style: map[string]any{
+													"backgroundColor": "#33FFFFFF",
+													"cornerRadius":    8,
+												},
+											},
 										},
 									},
-									spacerHorizontal(12),
-									{
-										Type: "button",
-										Props: map[string]any{
-											"label":  "My List",
-											"action": myList.ToMap(),
-										},
-										Style: map[string]any{
-											"backgroundColor": "#33FFFFFF",
-											"cornerRadius":  8,
-										},
-									},
+									spacerComponent(8),
 								},
 							},
-							spacerComponent(8),
 						},
 					},
 				},
@@ -264,11 +335,12 @@ func heroBanner(it clients.ContentItem, displayName string) models.Component {
 }
 
 func homeRootList(greeting string, hero *models.Component, rails []models.Component) *models.Component {
-	n := len(rails) + 1
+	n := len(rails) + 2 // app bar + greeting
 	if hero != nil {
 		n++
 	}
 	children := make([]models.Component, 0, n)
+	children = append(children, cinemaAppBar())
 	if hero != nil {
 		children = append(children, *hero)
 	}
@@ -276,11 +348,15 @@ func homeRootList(greeting string, hero *models.Component, rails []models.Compon
 		"padding":    16,
 		"fontSize":   22,
 		"fontWeight": "bold",
+		"textColor":  "#FFFFFFFF",
 	}))
 	children = append(children, rails...)
 	return &models.Component{
-		Type:     "list",
-		ID:       "home_root_list",
+		Type: "list",
+		ID:   "home_root_list",
+		Style: map[string]any{
+			"backgroundColor": "#FF131313",
+		},
 		Children: children,
 	}
 }

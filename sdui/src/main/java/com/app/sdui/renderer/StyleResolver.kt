@@ -5,9 +5,12 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.zIndex
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -36,6 +39,9 @@ object StyleResolver {
         // Margin (outer spacing)
         margin?.let { modifier = modifier.padding(it.dp) }
 
+        // z-index (useful for overlays)
+        zIndex?.let { modifier = modifier.then(Modifier.zIndex(it)) }
+
         // Size constraints
         width?.let { modifier = modifier.width(it.dp) }
         height?.let { modifier = modifier.height(it.dp) }
@@ -53,6 +59,16 @@ object StyleResolver {
         // Background + corner radius
         val bgColor = parseColor(backgroundColor)
         val radius = cornerRadius?.dp ?: 0.dp
+        val gf = parseColor(gradientFromColor)
+        val gt = parseColor(gradientToColor)
+        if (gf != null && gt != null) {
+            val from = gf.copy(alpha = gradientFromAlpha ?: gf.alpha)
+            val to = gt.copy(alpha = gradientToAlpha ?: gt.alpha)
+            modifier = modifier.background(
+                brush = Brush.verticalGradient(listOf(from, to)),
+                shape = RoundedCornerShape(radius),
+            )
+        }
         if (bgColor != null) {
             modifier = modifier.background(bgColor, RoundedCornerShape(radius))
         }
@@ -79,6 +95,9 @@ object StyleResolver {
 
         // Opacity
         opacity?.let { modifier = modifier.alpha(it) }
+
+        // Blur (useful for frosted glass surfaces)
+        blurDp?.let { modifier = modifier.blur(it.dp) }
 
         return modifier
     }

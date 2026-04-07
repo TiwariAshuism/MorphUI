@@ -33,6 +33,12 @@ object StyleParser {
             borderColor = styleMap["borderColor"] as? String,
             borderWidth = styleMap.floatOrNull("borderWidth"),
             elevation = styleMap.floatOrNull("elevation"),
+            zIndex = styleMap.floatOrNull("zIndex"),
+            blurDp = styleMap.floatOrNull("blurDp"),
+            gradientFromColor = styleMap["gradientFromColor"] as? String,
+            gradientToColor = styleMap["gradientToColor"] as? String,
+            gradientFromAlpha = styleMap.floatOrNull("gradientFromAlpha"),
+            gradientToAlpha = styleMap.floatOrNull("gradientToAlpha"),
         )
     }
 

@@ -30,4 +30,13 @@ data class UIStyle(
     val borderColor: String? = null,
     val borderWidth: Float? = null,
     val elevation: Float? = null,
+    // Phase 9-ish styling extensions (used to match richer web-like designs).
+    // All are optional and safely ignored by older renderers.
+    val zIndex: Float? = null,
+    val blurDp: Float? = null,
+    // Simple vertical gradient background for overlays (e.g. hero scrim).
+    val gradientFromColor: String? = null,
+    val gradientToColor: String? = null,
+    val gradientFromAlpha: Float? = null,
+    val gradientToAlpha: Float? = null,
 )
