@@ -53,7 +53,8 @@ func (c *Composer) BuildHome(ctx context.Context, req HomeRequest) (*models.Sdui
 		return nil, err
 	}
 
-	rails = orderRailsPersonalized(rails, req.UserID)
+	exps := assignExperiments(req.UserID)
+	rails = orderRailsPersonalized(rails, req.UserID, exps)
 	rails = dedupeRailsGlobally(rails)
 
 	var allIDs []string
@@ -75,6 +76,10 @@ func (c *Composer) BuildHome(ctx context.Context, req HomeRequest) (*models.Sdui
 	if flags["enable_hero_banner"] {
 		if hi := pickHeroItem(rails, byID); hi != nil {
 			h := heroBanner(*hi, profile.Name)
+			// Phase 7: experiment-driven copy tweak.
+			if exps["hero_variant"] == "alt_copy" {
+				applyHeroCopyVariant(&h, "Tonight's pick", "Because you watched similar titles")
+			}
 			hero = &h
 		}
 	}
@@ -107,11 +112,38 @@ func (c *Composer) BuildHome(ctx context.Context, req HomeRequest) (*models.Sdui
 		TTLMs:         ttl,
 		TraceID:       req.TraceID,
 		ServerTimeMs:  req.Now.UnixMilli(),
-		Experiments:   assignExperiments(req.UserID),
+		Experiments:   exps,
 		FeatureFlags:  flags,
 		Screen:        screen,
 		FallbackPage:  FallbackPageMinimal(),
 	}, nil
+}
+
+func applyHeroCopyVariant(hero *models.Component, title, subtitle string) {
+	if hero == nil {
+		return
+	}
+	var walk func(c *models.Component)
+	walk = func(c *models.Component) {
+		if c == nil {
+			return
+		}
+		if c.Type == "text" && c.Props != nil {
+			switch c.ID {
+			case "hero_title":
+				c.Props["value"] = title
+			case "hero_subtitle":
+				c.Props["value"] = subtitle
+			}
+		}
+		for i := range c.Children {
+			walk(&c.Children[i])
+		}
+		if c.Fallback != nil {
+			walk(c.Fallback)
+		}
+	}
+	walk(hero)
 }
 
 // BuildSection returns paginated section items with client cache hint (Phase 3).

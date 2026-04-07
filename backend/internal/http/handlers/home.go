@@ -18,9 +18,6 @@ func Home(c *composer.Composer, mem *cache.Memory, cfg config.Config, m observab
 	return func(w http.ResponseWriter, r *http.Request) {
 		userID := r.Header.Get("X-User-Id")
 		if userID == "" {
-			userID = r.URL.Query().Get("user_id")
-		}
-		if userID == "" {
 			userID = "guest"
 		}
 

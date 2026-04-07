@@ -120,6 +120,9 @@ class ComponentRegistry {
             ButtonComponent(
                 label = props["label"] as? String ?: "",
                 action = ActionParser.parse(props["action"]),
+                loadingKey = props["loadingKey"] as? String,
+                enabledKey = props["enabledKey"] as? String,
+                disabledLabel = props["disabledLabel"] as? String,
                 id = id,
                 style = style,
             )

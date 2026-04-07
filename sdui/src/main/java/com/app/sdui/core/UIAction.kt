@@ -27,6 +27,11 @@ sealed interface UIAction {
         val body: Map<String, Any>? = null,
         val onSuccess: UIAction? = null,
         val onError: UIAction? = null,
+        /**
+         * Optional action that can be triggered by the client when an API call fails and the user chooses to retry.
+         * This is a Phase 6 follow-up; if absent, clients may use a default retry strategy.
+         */
+        val onRetry: UIAction? = null,
     ) : UIAction
 
     data class Custom(

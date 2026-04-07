@@ -2,6 +2,9 @@ package com.app.sdui.di
 
 import com.app.sdui.binding.DataBindingEngine
 import com.app.sdui.cache.UICache
+import com.app.sdui.analytics.ActionAnalytics
+import com.app.sdui.analytics.AnalyticsEventQueue
+import com.app.sdui.analytics.BffActionAnalytics
 import com.app.sdui.data.remote.FirebaseService
 import com.app.sdui.data.remote.bff.ApiActionExecutor
 import com.app.sdui.data.remote.bff.BffClient
@@ -10,6 +13,7 @@ import com.app.sdui.data.repository.FirebaseScreenRepository
 import com.app.sdui.data.repository.ScreenRepository
 import com.app.sdui.engine.MorphUIConfig
 import com.app.sdui.engine.MorphUIEngine
+import com.app.sdui.identity.UserIdentity
 import com.app.sdui.presentation.viewmodel.ScreenViewModel
 import com.app.sdui.registry.ComponentRegistry
 import com.google.firebase.Firebase
@@ -46,6 +50,17 @@ val appModule = module {
     }
     single { BffClient(baseUrl = get(), http = get(), json = get()) }
     single { ApiActionExecutor(baseUrl = get(), http = get(), json = get(), bff = get()) }
+    single { AnalyticsEventQueue(androidContext(), get()) }
+    single<ActionAnalytics> {
+        BffActionAnalytics(
+            baseUrl = get(),
+            http = get(),
+            json = get(),
+            userIdProvider = { get<UserIdentity>().userId() },
+            queue = get(),
+        )
+    }
+    single { UserIdentity(androidContext()) }
 
     // ── MorphUI Engine ──
     single { ComponentRegistry() }
@@ -76,7 +91,7 @@ val appModule = module {
         // Replace with auth/session propagation in Phase 7.
         BffScreenRepository(
             bff = get(),
-            userIdProvider = { "42" },
+            userIdProvider = { get<UserIdentity>().userId() },
             acceptLanguageProvider = { "en-US" },
         )
     }
@@ -98,7 +113,8 @@ val appModule = module {
             screens = get(),
             context = androidContext(),
             apiExecutor = get(),
-            userIdProvider = { "42" },
+            analytics = get(),
+            userIdProvider = { get<UserIdentity>().userId() },
             acceptLanguageProvider = { "en-US" },
         )
     }

@@ -4,6 +4,8 @@ import (
 	"log/slog"
 	"net/http"
 	"time"
+
+	"morphui/backend/internal/observability"
 )
 
 type LoggingOptions struct {
@@ -12,7 +14,7 @@ type LoggingOptions struct {
 	SlowRequestThreshold  time.Duration
 }
 
-func Logging(logger *slog.Logger, next http.Handler, opt LoggingOptions) http.Handler {
+func Logging(logger *slog.Logger, m observability.Metrics, next http.Handler, opt LoggingOptions) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
 		sw := &statusWriter{ResponseWriter: w, status: http.StatusOK}
@@ -20,11 +22,14 @@ func Logging(logger *slog.Logger, next http.Handler, opt LoggingOptions) http.Ha
 		next.ServeHTTP(sw, r)
 
 		latency := time.Since(start)
+		ms := latency.Milliseconds()
+		m.RecordHTTP(r.URL.Path, sw.status, ms)
+
 		attrs := []any{
 			"method", r.Method,
 			"path", r.URL.Path,
 			"status", sw.status,
-			"latency_ms", latency.Milliseconds(),
+			"latency_ms", ms,
 			"request_id", RequestIDFromContext(r.Context()),
 		}
 

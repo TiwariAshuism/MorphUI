@@ -48,7 +48,7 @@ object ComposeRenderer {
             is TextComponent -> RenderText(component)
             is ImageComponent -> RenderImage(component)
             is HeroComponent -> RenderHero(component, onAction)
-            is ButtonComponent -> RenderButton(component, onAction)
+            is ButtonComponent -> RenderButton(component, formState, onAction)
             is ColumnComponent -> RenderColumn(component, formState, onStateChange, onAction)
             is RowComponent -> RenderRow(component, formState, onStateChange, onAction)
             is SpacerComponent -> RenderSpacer(component)
@@ -157,19 +157,40 @@ object ComposeRenderer {
     }
 
     @Composable
-    private fun RenderButton(component: ButtonComponent, onAction: (UIAction) -> Unit) {
+    private fun RenderButton(
+        component: ButtonComponent,
+        formState: Map<String, Any>,
+        onAction: (UIAction) -> Unit,
+    ) {
         val style = component.style
+
+        val isLoading = component.loadingKey
+            ?.let { (formState[it] as? Boolean) == true }
+            ?: false
+        val isEnabled = component.enabledKey
+            ?.let { (formState[it] as? Boolean) != false }
+            ?: true
 
         Button(
             onClick = { onAction(component.action) },
+            enabled = isEnabled && !isLoading,
             modifier = style.toModifier(),
             colors = ButtonDefaults.buttonColors(
                 containerColor = StyleResolver.parseColor(style?.backgroundColor) ?: Color(0xFF6200EE),
             ),
             shape = RoundedCornerShape(style?.cornerRadius?.dp ?: 8.dp),
         ) {
+            if (isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(18.dp),
+                    strokeWidth = 2.dp,
+                    color = style.textColor().let { if (it == Color.Black) Color.White else it },
+                )
+                Spacer(modifier = Modifier.width(10.dp))
+            }
+            val label = if (isEnabled) component.label else (component.disabledLabel ?: component.label)
             Text(
-                text = component.label,
+                text = label,
                 color = style.textColor().let { if (it == Color.Black) Color.White else it },
                 fontSize = style.fontSize(),
             )

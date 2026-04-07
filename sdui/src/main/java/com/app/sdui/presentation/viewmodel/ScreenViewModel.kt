@@ -6,12 +6,14 @@ import android.net.Uri
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.app.sdui.analytics.ActionAnalytics
 import com.app.sdui.core.UIAction
 import com.app.sdui.core.UIComponent
 import com.app.sdui.data.remote.bff.ApiActionExecutor
 import com.app.sdui.data.repository.ScreenRepository
 import com.app.sdui.engine.MorphUIEngine
 import com.app.sdui.presentation.tree.appendIntoRail
+import com.app.sdui.presentation.tree.removeLoadMoreFromRail
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,6 +29,7 @@ class ScreenViewModel(
     private val screens: ScreenRepository,
     private val context: Context,
     private val apiExecutor: ApiActionExecutor,
+    private val analytics: ActionAnalytics,
     private val userIdProvider: () -> String?,
     private val acceptLanguageProvider: () -> String?,
 ) : ViewModel() {
@@ -78,6 +81,7 @@ class ScreenViewModel(
                 if (cached.isSuccess && cached.component != null) {
                     android.util.Log.d("ScreenViewModel", "Rendering cached screen: $screenId")
                     _uiState.value = UiState.Success(cached.component)
+                    emitImpressions(screenId, cached.component)
                 }
             }
 
@@ -105,6 +109,7 @@ class ScreenViewModel(
                                         "Parsed screen: $screenId (v${screenResult.version})",
                                     )
                                     _uiState.value = UiState.Success(screenResult.component)
+                                    emitImpressions(screenId, screenResult.component)
                                 } else {
                                     val errMsg = screenResult.errors.joinToString("; ")
                                     android.util.Log.e("ScreenViewModel", "Parse errors: $errMsg")
@@ -154,6 +159,7 @@ class ScreenViewModel(
 
     fun handleApiCall(action: UIAction.ApiCall) {
         viewModelScope.launch {
+            analytics.onActionTap(action)
             executeApiCall(action)
         }
     }
@@ -162,7 +168,9 @@ class ScreenViewModel(
         val form = _formState.value
         val sectionHint = sectionIdFromEndpoint(action.endpoint)
         val cursor = sectionHint?.let { sectionCursors[it] }
+        sectionHint?.let { setSectionLoading(it, isLoading = true) }
 
+        analytics.onApiCallStart(action.method, action.endpoint)
         val result = apiExecutor.execute(
             action = action,
             formState = form,
@@ -175,15 +183,21 @@ class ScreenViewModel(
             onSuccess = { exec ->
                 when (exec) {
                     is ApiActionExecutor.ExecutionResult.Section -> {
+                        analytics.onApiCallSuccess(action.method, action.endpoint, 200)
                         if (!exec.nextCursor.isNullOrBlank()) {
                             sectionCursors[exec.sectionId] = exec.nextCursor
                         } else {
                             sectionCursors.remove(exec.sectionId)
                         }
                         mergeSectionItems(exec.sectionId, exec.itemMaps)
+                        if (exec.nextCursor.isNullOrBlank()) {
+                            removeLoadMore(exec.sectionId)
+                            setSectionEnabled(exec.sectionId, isEnabled = false)
+                        }
                         emitUiAction(action.onSuccess)
                     }
                     is ApiActionExecutor.ExecutionResult.HttpSuccess -> {
+                        analytics.onApiCallSuccess(action.method, action.endpoint, exec.code)
                         emitUiAction(action.onSuccess)
                     }
                     is ApiActionExecutor.ExecutionResult.HttpFailure -> {
@@ -191,15 +205,34 @@ class ScreenViewModel(
                             "ScreenViewModel",
                             "API error ${exec.code}: ${exec.message}",
                         )
+                        analytics.onApiCallFailure(
+                            action.method,
+                            action.endpoint,
+                            exec.code,
+                            exec.message,
+                        )
+                        if (action.onError == null) {
+                            handleShowToast("Request failed (${exec.code})")
+                        }
                         emitUiAction(action.onError)
+                        if (action.onRetry != null) {
+                            // Optional: server can provide an explicit retry action.
+                            // The UI can surface this in the future; for now we just keep it available.
+                        }
                     }
                 }
             },
             onFailure = { e ->
                 android.util.Log.e("ScreenViewModel", "API call failed", e)
+                analytics.onApiCallFailure(action.method, action.endpoint, null, e.message)
+                if (action.onError == null) {
+                    handleShowToast(e.message ?: "Request failed")
+                }
                 emitUiAction(action.onError)
             },
         )
+
+        sectionHint?.let { setSectionLoading(it, isLoading = false) }
     }
 
     private suspend fun emitUiAction(action: UIAction?) {
@@ -225,6 +258,51 @@ class ScreenViewModel(
         if (newItems.isEmpty()) return
         val merged = appendIntoRail(current, railId, newItems)
         _uiState.value = UiState.Success(merged)
+        emitImpressions("home", merged)
+    }
+
+    private fun removeLoadMore(sectionId: String) {
+        val current = (_uiState.value as? UiState.Success)?.component ?: return
+        val railId = "rail_$sectionId"
+        val merged = removeLoadMoreFromRail(current, railId)
+        _uiState.value = UiState.Success(merged)
+        emitImpressions("home", merged)
+    }
+
+    private fun emitImpressions(screenId: String, root: UIComponent) {
+        // Best-effort: emit impressions for components that have ids.
+        // Dedupe is handled client-side per screen render to keep event volume sane.
+        val seen = HashSet<String>()
+        fun walk(c: UIComponent) {
+            val id = c.id
+            if (!id.isNullOrBlank() && seen.add(id)) {
+                analytics.onImpression(screenId, id, c.javaClass.simpleName)
+            }
+            when (c) {
+                is com.app.sdui.components.PageComponent -> c.children.forEach(::walk)
+                is com.app.sdui.components.ListComponent -> c.children.forEach(::walk)
+                is com.app.sdui.components.ColumnComponent -> c.children.forEach(::walk)
+                is com.app.sdui.components.RowComponent -> c.children.forEach(::walk)
+                is com.app.sdui.components.CarouselComponent -> c.children.forEach(::walk)
+                is com.app.sdui.components.GridComponent -> c.children.forEach(::walk)
+                is com.app.sdui.components.CardComponent -> walk(c.child)
+                else -> {}
+            }
+        }
+        walk(root)
+    }
+
+    private fun setSectionLoading(sectionId: String, isLoading: Boolean) {
+        val k = "loading:section:$sectionId"
+        _formState.value = _formState.value + (k to isLoading)
+        if (isLoading) {
+            setSectionEnabled(sectionId, isEnabled = false)
+        }
+    }
+
+    private fun setSectionEnabled(sectionId: String, isEnabled: Boolean) {
+        val k = "enabled:section:$sectionId"
+        _formState.value = _formState.value + (k to isEnabled)
     }
 
     private fun sectionIdFromEndpoint(endpoint: String): String? {
@@ -239,6 +317,7 @@ class ScreenViewModel(
     }
 
     fun handleCustomAction(action: UIAction.Custom) {
+        analytics.onActionTap(action)
         android.util.Log.d("ScreenViewModel", "Custom action: ${action.name} params=${action.params}")
     }
 }

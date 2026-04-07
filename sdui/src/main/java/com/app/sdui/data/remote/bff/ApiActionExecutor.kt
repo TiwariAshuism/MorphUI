@@ -53,8 +53,8 @@ class ApiActionExecutor(
             val mergedBody = (action.body.orEmpty() + formState).toMutableMap()
             val resolved = resolveUrl(action.endpoint)
 
-            require(isAllowed(resolved)) {
-                "Blocked by allowlist: ${resolved.encodedPath}"
+            require(ApiAllowlist.isAllowed(baseUrl, resolved, action.method)) {
+                "Blocked by allowlist: ${action.method} ${resolved.scheme}://${resolved.host}${resolved.encodedPath}"
             }
 
             val path = resolved.encodedPath
@@ -113,14 +113,6 @@ class ApiActionExecutor(
             val relative = if (e.startsWith("/")) e else "/$e"
             baseUrl.resolve(relative) ?: throw IllegalArgumentException("Cannot resolve $relative against $baseUrl")
         }
-    }
-
-    private fun isAllowed(url: HttpUrl): Boolean {
-        val p = url.encodedPath
-        return p.startsWith("/section/") ||
-            p.startsWith("/api/") ||
-            p == "/healthz" ||
-            p == "/home"
     }
 
     private fun Map<String, Any>.toJsonElement(): JsonObject {

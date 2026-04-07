@@ -2,6 +2,7 @@ package composer
 
 import (
 	"morphui/backend/internal/clients"
+	"morphui/backend/internal/experiments"
 	"morphui/backend/internal/models"
 )
 
@@ -35,6 +36,10 @@ func buttonLoadMore(railID string) models.Component {
 		ID:   railID + "_load_more",
 		Props: map[string]any{
 			"label":  "Load more",
+			// Phase 6 UX: client can show a spinner/disable during pagination.
+			"loadingKey":  "loading:section:" + railID,
+			"enabledKey":  "enabled:section:" + railID,
+			"disabledLabel": "No more",
 			"action": models.ApiCallAction("GET", "/section/"+railID).ToMap(),
 		},
 		Style: map[string]any{
@@ -281,15 +286,9 @@ func homeRootList(greeting string, hero *models.Component, rails []models.Compon
 }
 
 func assignExperiments(userID string) map[string]string {
-	m := map[string]string{
-		"home_rail_order": "variant_a",
-		"schema":          "sdui.v1",
-	}
+	m := experiments.Assign(userID)
 	if userID != "" && userID != "guest" {
 		m["reco_personalization"] = "on"
-		if len(userID)%2 == 0 {
-			m["home_rail_order"] = "variant_b"
-		}
 	}
 	return m
 }

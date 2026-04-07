@@ -16,49 +16,25 @@ minimal context.
 
 ## 1) Current repo state (what exists today)
 
-### Android SDUI runtime already present
+### Android SDUI runtime (`sdui/`)
 
-Module: `sdui/`
+- **Engine / registry / renderer / validation / binding / cache** — as before; built-ins now include **`page`**, **`carousel`**, **`grid`**, **`hero`**.
+- **`ScreenViewModel`** — loads `home` from the **Go BFF** (`BffScreenRepository`); **`handleApiCall()`** runs **`ApiActionExecutor`** (allowlisted HTTP + section pagination merge).
+- **`DynamicScreen`** — collects **`uiEvents`** for async **`onSuccess` / `onError`** (e.g. navigation after API completion).
+- **Identity** — **`UserIdentity`** (device-scoped anonymous id) → **`X-User-Id`** on BFF calls.
+- **Analytics** — **`BffActionAnalytics`** → **`POST /api/events`** (batch, persistence + retry, impression dedupe).
 
-Key files:
+### Go BFF (`backend/`)
 
-- `sdui/src/main/java/com/app/sdui/engine/MorphUIEngine.kt`
-  - Pipeline: version check → schema validation → data binding → parse → cache
-  - Expects JSON like:
-    - root may contain `ui_version`
-    - root may contain `screen` wrapper (optional)
-    - otherwise root is a component
-- `sdui/src/main/java/com/app/sdui/registry/ComponentRegistry.kt`
-  - Registry maps `type` string → parser
-  - Current built-ins: `text`, `image`, `button`, `column`, `row`, `spacer`,
-    `card`, `divider`, `text_input`, `icon_button`, `list`, `bottom_nav`
-- `sdui/src/main/java/com/app/sdui/renderer/ComposeRenderer.kt`
-  - Renders sealed `UIComponent` recursively
-- `sdui/src/main/java/com/app/sdui/parser/SchemaValidator.kt`
-  - Basic validation: required props, child support, max depth
-- `sdui/src/main/java/com/app/sdui/binding/DataBindingEngine.kt`
-  - String templating: `{{path.to.variable}}`
-- `sdui/src/main/java/com/app/sdui/core/UIAction.kt` + `parser/ActionParser.kt`
-  - Action types exist: Navigate/OpenUrl/ShowToast/ApiCall/Custom/Back/None
-- `sdui/src/main/java/com/app/sdui/cache/UICache.kt`
-  - Memory + SharedPreferences cache
-- `sdui/src/main/java/com/app/sdui/presentation/screen/DynamicScreen.kt`
-  - Screen renders a root component and dispatches actions
-- `sdui/src/main/java/com/app/sdui/presentation/viewmodel/ScreenViewModel.kt`
-  - Loads screen via Firebase + engine parse
-  - `handleApiCall()` is **TODO** (currently logs/toasts)
-- `sdui/src/main/java/com/app/sdui/data/remote/FirebaseService.kt`
-  - Current “backend” is Firebase Realtime Database
+- **`GET /healthz`**, **`GET /home`**, **`GET /section/{id}`**, **`POST /api/events`**, **`POST /api/mylist`**, **`GET /metrics`**
+- **Composer** — hero + rails, caching, **experiments** (stable bucketing), **variant-driven** rail order / hero copy.
+- **Phase 8** — contract tests, fuzz tests, CORS, rate limit on events, per-route body limits, **`slog`** on events, in-memory **Prometheus-style** `/metrics`.
 
-### Missing today
+### Still optional / future
 
-- No Go backend files at all (no `.go`)
-- No BFF endpoints (`/home`, `/section/...`)
-- No production SDUI schema contract (only loose map-based parsing)
-- No Netflix home primitives: carousel / grid / hero / page
-- No real action execution system (API calls, deep links, section paging)
-- No personalization/A-B testing integration
-- No contract testing between backend schema and Android renderer
+- Replace anonymous id with **real auth** and hardened **TLS / pinning** for production BFF URLs.
+- **Viewport-based** impressions (vs current tree-walk / session dedupe).
+- **Durable** event store (DB/stream) instead of logs-only on the BFF.
 
 ---
 
@@ -197,12 +173,9 @@ Current repo already supports:
 
 - `text`, `image`, `button`, `list`, `column`, `row`, etc.
 
-Missing to implement:
+Implemented in registry/renderer:
 
-- `page`
-- `carousel`
-- `grid`
-- `hero` (optional but recommended)
+- `page`, `carousel`, `grid`, `hero` (see `ComponentRegistry`, `ComposeRenderer`)
 
 ### Actions (v1)
 
@@ -545,60 +518,96 @@ Testing:
 
 ## 10) Phase plan (execution order)
 
-### Phase 0 — Baseline & alignment (1–2 days)
+### Phase 0 — Baseline & alignment (1–2 days) ✅
 
 - Define target Home UX and acceptance criteria
 - Decide action naming compatibility (`navigate` vs `Navigate`)
 - Decide transport (HTTP is required; Firebase can remain for preview only)
 
-### Phase 1 — Go backend foundation (2–4 days)
+### Phase 1 — Go backend foundation (2–4 days) ✅
 
 - Create `backend/` module and server
 - Implement `GET /home`, `GET /section/{id}`, `GET /healthz`
 - Add request_id + structured logs
 - Mock downstream service clients
 
-### Phase 2 — SDUI schema v1 (2–3 days)
+### Phase 2 — SDUI schema v1 (2–3 days) ✅
 
 - Finalize envelope + component shape + action shape
 - Implement composer types/models in Go
 - Add fallbacks + gating fields
 
-### Phase 3 — UI Composer + realistic `/home` (3–6 days)
+### Phase 3 — UI Composer + realistic `/home` (3–6 days) ✅
 
 - Compose hero + rails (trending/continue/recommended)
 - Add paging tokens
 - Add caching and response shaping
 
-### Phase 4 — Android HTTP + typed parsing (3–6 days)
+### Phase 4 — Android HTTP + typed parsing (3–6 days) ✅
 
 - Replace Firebase loading path with HTTP repository
 - Add typed DTO decoding (kotlinx.serialization or Moshi)
 - Validate + render `/home`
 
-### Phase 5 — Android primitives (4–8 days)
+### Phase 5 — Android primitives (4–8 days) ✅
 
 - Implement `page`, `carousel`, `grid`, `hero`
 - Update registry/renderer/validator
-- Performance tuning (keys, layout, Coil sizing)
+- Performance tuning (keys, layout, Coil sizing) — ongoing as needed
 
-### Phase 6 — Action system v2 (3–6 days)
+### Phase 6 — Action system v2 (3–6 days) ✅
 
-- Implement real `api_call` execution
-- Add deep link allowlist and navigation integration
-- Implement `load_more` rail pagination
+- [x] Implement real `api_call` execution (OkHttp + allowlisted endpoints)
+- [x] Add deep link allowlist and navigation integration (async `onSuccess`/`onError` via `SharedFlow`)
+- [x] Implement `load_more` rail pagination (fetch `/section/{id}` + append into `rail_{id}`)
 
-### Phase 7 — Personalization + A/B (ongoing)
+Phase 6 follow-ups (implemented):
 
-- Server-side assignments
-- Variant-driven composer choices
-- Exposure/click logging
+- [x] Tighten allowlist (host/scheme + per-path method allowlist) — `ApiAllowlist` / `ApiActionExecutor`
+- [x] UX polish for pagination (loading keys, disable/hide when no `next_cursor`, remove load-more button)
+- [x] Standardize API error UX (default toast when `onError` absent; optional `onRetry` on `ApiCall`)
+- [x] Action analytics hooks — `ActionAnalytics` + `BffActionAnalytics` (`api_call_*`, taps, impressions)
 
-### Phase 8 — Production readiness (1–2 weeks)
+### Phase 7 — Personalization + A/B ✅ (core shipped; polish ongoing)
 
-- Contract tests, fuzz tests
-- Security hardening
-- Observability upgrades (metrics/tracing)
+- [x] Server-side assignments (stable bucketing) — `backend/internal/experiments`, `experiments` map on envelope
+  - [x] Experiment catalog (`home_rail_order`, `hero_variant`, …) in code (config file is a follow-up)
+  - [x] Stable bucketing (hash user id + experiment name → variant)
+  - [x] Return assignments in envelope (`experiments`)
+  - [ ] “Force variant” dev override (query/header) for QA
+- [x] Variant-driven composer choices
+  - [x] Rail order varies with `home_rail_order`
+  - [x] Hero copy varies with `hero_variant` (`applyHeroCopyVariant`)
+  - [ ] Explicit client-side gating UI for `gating` blocks (currently informational / safe defaults)
+- [x] Exposure/click logging (baseline)
+  - [x] Event payload: `event_name`, `screen_id`, `component_id`, `action_type`, `attrs`, `ts_ms`
+  - [x] `POST /api/events` (batch) + structured `slog` + validation + rate limit
+  - [x] Android: best-effort impressions + taps + API lifecycle events
+  - [ ] Backend: durable warehouse + join with assignments (analytics pipeline / Phase 8+)
+- [x] Propagate user identity to BFF
+  - [x] Android: `UserIdentity` (device-scoped anonymous id) → `X-User-Id`
+  - [ ] Android: replace with **real auth** session when available
+  - [x] BFF: `X-User-Id` only (no `?user_id=`), format validation in middleware
+  - [x] Cache keys include user id (`/home`, `/section`)
+
+### Phase 8 — Production readiness (1–2 weeks) ✅
+
+- [x] Contract tests (schema + golden payloads)
+  - [x] `/home` envelope vs `schema/sdui.v1.schema.json`
+  - [x] `/section/{id}` response vs `schema/sdui.v1.section.schema.json`
+  - [x] Golden snapshot `internal/contract/testdata/golden/home_envelope.golden.json` (regenerate with `GENERATE_GOLDEN=1`)
+- [x] Fuzz tests (decoder safety for envelope + section models)
+- [x] Security hardening (request body limits per route, `X-User-Id` validation, CORS for dev, **rate limit** on `/api/events`)
+- [x] Observability upgrades (`/metrics` with HTTP + latency + cache + events ingested counters; structured `slog` per client event in `POST /api/events`)
+
+
+### Phase 8 follow-ups (Android + ops)
+
+- [x] Analytics queue persistence + retry backoff (`AnalyticsEventQueue` + `BffActionAnalytics`)
+- [x] Session-level impression dedupe (`BffActionAnalytics`)
+- [x] JVM unit tests (`ApiAllowlistTest`, `ComponentTreeAppendTest`) — Gradle `test` task may fail on some environments; use `assembleDebug` or `./gradlew :sdui:test` when supported
+- [ ] TLS / pinning for production BFF endpoints
+- [ ] True viewport-based impressions (Lazy list visibility)
 
 ---
 
@@ -623,4 +632,12 @@ Android:
   - api calls
   - pagination actions
 - Invalid/unknown components do not crash (fallback or UnknownComponent)
+
+DoD status (as implemented):
+
+- [x] Pagination via `/section/{id}` + cursor
+- [x] Android `api_call` execution + nested `onSuccess`/`onError`
+- [x] Navigation integration for async actions
+- [x] Personalized **rails order + hero experiments** (server-driven assignments + composer)
+- [ ] **Auth-backed** identity and **production-grade** reco/content services (beyond mocks + anonymous id)
 

@@ -43,6 +43,26 @@ fun appendIntoRail(
     }
 }
 
+/**
+ * Removes the trailing **Load more** button from a rail identified by [railId], if present.
+ * Used when the server returns no `next_cursor`.
+ */
+fun removeLoadMoreFromRail(root: UIComponent, railId: String): UIComponent {
+    return when (root) {
+        is PageComponent -> root.copy(children = root.children.map { removeLoadMoreFromRail(it, railId) })
+        is ListComponent -> root.copy(children = root.children.map { removeLoadMoreFromRail(it, railId) })
+        is ColumnComponent -> {
+            if (root.id == railId) root.copy(children = root.children.dropLastWhileLoadMore())
+            else root.copy(children = root.children.map { removeLoadMoreFromRail(it, railId) })
+        }
+        is RowComponent -> root.copy(children = root.children.map { removeLoadMoreFromRail(it, railId) })
+        is CarouselComponent -> root.copy(children = root.children.map { removeLoadMoreFromRail(it, railId) })
+        is GridComponent -> root.copy(children = root.children.map { removeLoadMoreFromRail(it, railId) })
+        is CardComponent -> root.copy(child = removeLoadMoreFromRail(root.child, railId))
+        else -> root
+    }
+}
+
 private fun mergeColumnOrAppend(col: ColumnComponent, newItems: List<UIComponent>): ColumnComponent {
     val children = col.children.toMutableList()
     if (children.isEmpty()) return col.copy(children = newItems)
@@ -56,4 +76,11 @@ private fun mergeColumnOrAppend(col: ColumnComponent, newItems: List<UIComponent
     } else {
         col.copy(children = children + newItems)
     }
+}
+
+private fun List<UIComponent>.dropLastWhileLoadMore(): List<UIComponent> {
+    if (isEmpty()) return this
+    val last = last()
+    val isLoadMore = last is ButtonComponent && last.label.trim().equals("Load more", ignoreCase = true)
+    return if (isLoadMore) dropLast(1) else this
 }

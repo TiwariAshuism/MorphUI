@@ -33,6 +33,7 @@ object ActionParser {
                 body = map["body"] as? Map<String, Any>,
                 onSuccess = parse(map["onSuccess"]),
                 onError = parse(map["onError"]),
+                onRetry = parse(map["onRetry"]),
             )
 
             "Custom" -> UIAction.Custom(

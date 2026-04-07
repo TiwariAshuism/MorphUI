@@ -2,8 +2,12 @@ package composer
 
 import "morphui/backend/internal/clients"
 
-// orderRailsPersonalized puts Continue Watching first for signed-in users (Phase 3 personalization).
-func orderRailsPersonalized(rails []clients.Rail, userID string) []clients.Rail {
+// orderRailsPersonalized applies experiment-driven rail order.
+//
+// Phase 7:
+// - home_rail_order=variant_a: default order
+// - home_rail_order=variant_b: recommended-first order
+func orderRailsPersonalized(rails []clients.Rail, userID string, experiments map[string]string) []clients.Rail {
 	if userID == "" || userID == "guest" {
 		return rails
 	}
@@ -11,7 +15,11 @@ func orderRailsPersonalized(rails []clients.Rail, userID string) []clients.Rail 
 	for _, r := range rails {
 		byID[r.ID] = r
 	}
+
 	order := []string{"continue_watching", "trending", "recommended"}
+	if experiments != nil && experiments["home_rail_order"] == "variant_b" {
+		order = []string{"recommended", "continue_watching", "trending"}
+	}
 	var out []clients.Rail
 	used := make(map[string]bool)
 	for _, id := range order {

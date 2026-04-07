@@ -26,9 +26,6 @@ func Section(c *composer.Composer, mem *cache.Memory, cfg config.Config, m obser
 
 		userID := r.Header.Get("X-User-Id")
 		if userID == "" {
-			userID = r.URL.Query().Get("user_id")
-		}
-		if userID == "" {
 			userID = "guest"
 		}
 

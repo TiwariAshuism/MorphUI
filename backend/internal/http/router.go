@@ -21,17 +21,22 @@ func NewRouter(logger *slog.Logger, cfg config.Config) http.Handler {
 
 	uiComposer := composer.NewComposer(userClient, contentClient, recoClient)
 	mem := cache.NewMemory()
-	metrics := observability.Noop{}
+	metrics := observability.NewInMemoryMetrics()
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /healthz", handlers.Healthz())
 	mux.HandleFunc("GET /home", handlers.Home(uiComposer, mem, cfg, metrics))
 	mux.HandleFunc("GET /section/{id}", handlers.Section(uiComposer, mem, cfg, metrics))
 	mux.HandleFunc("POST /api/mylist", handlers.MyListStub())
+	mux.HandleFunc("POST /api/events", handlers.EventsIngest(logger, metrics))
+	mux.HandleFunc("GET /metrics", metrics.Handler())
 
 	var h http.Handler = mux
 	h = middleware.RequestID(h)
-	h = middleware.Logging(logger, h, middleware.LoggingOptions{
+	h = middleware.Security(h)
+	h = middleware.CORS("", h)
+	h = middleware.RateLimitPathPrefix("/api/events", 300, h)
+	h = middleware.Logging(logger, metrics, h, middleware.LoggingOptions{
 		IncludeRequestHeaders: false,
 		IncludeQuery:          true,
 		SlowRequestThreshold: 800 * time.Millisecond,
