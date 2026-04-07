@@ -128,6 +128,7 @@ object MorphUIInspector {
             is ListComponent -> "List (${component.children.size} items)"
             is BottomNavComponent -> "BottomNav (${component.children.size} items)"
             is UnknownComponent -> "Unknown (type=\"${component.type}\")"
+            else -> {}
         }
 
         return "$detail$idSuffix"
@@ -152,6 +153,9 @@ object MorphUIInspector {
             is TextInputComponent -> emptyList()
             is IconButtonComponent -> emptyList()
             is UnknownComponent -> emptyList()
+            else -> {
+                android.util.Log.w("MorphUIInspector", "Unknown component type: ${component::class.java}")
+                emptyList()
+            }}
         }
     }
-}

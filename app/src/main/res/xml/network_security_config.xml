@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Allow HTTP (cleartext) to the dev machine from the Android emulator.
+  Emulator maps 10.0.2.2 → host loopback (where the Go BFF runs on :8080).
+
+  Production should use HTTPS and remove or narrow this config.
+-->
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">10.0.2.2</domain>
+        <domain includeSubdomains="true">localhost</domain>
+        <domain includeSubdomains="true">127.0.0.1</domain>
+    </domain-config>
+</network-security-config>

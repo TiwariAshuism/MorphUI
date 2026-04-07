@@ -18,7 +18,9 @@ package com.app.sdui.binding
 class DataBindingEngine {
 
     companion object {
-        private val BINDING_PATTERN = Regex("""\{\{(.+?)}}""")
+        // Match `{{ ... }}` with non-greedy capture for the path.
+        // Braces must be escaped on Android's regex engine.
+        private val BINDING_PATTERN = Regex("""\{\{(.+?)\}\}""")
     }
 
     /**

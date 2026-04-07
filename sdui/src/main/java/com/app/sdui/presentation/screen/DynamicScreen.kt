@@ -10,6 +10,7 @@ import com.app.sdui.core.UIAction
 import com.app.sdui.debug.MorphUIInspector
 import com.app.sdui.renderer.ComposeRenderer
 import com.app.sdui.presentation.viewmodel.ScreenViewModel
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun DynamicScreen(
@@ -20,9 +21,25 @@ fun DynamicScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val formState by viewModel.formState.collectAsState()
+    val navigate by rememberUpdatedState(onNavigate)
+    val back by rememberUpdatedState(onBack)
 
     LaunchedEffect(screenId) {
         viewModel.loadScreen(screenId)
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.uiEvents.collectLatest { action ->
+            when (action) {
+                is UIAction.Navigate -> navigate(action.route, action.params)
+                is UIAction.OpenUrl -> viewModel.handleOpenUrl(action.url)
+                is UIAction.ShowToast -> viewModel.handleShowToast(action.message)
+                is UIAction.Back -> back()
+                is UIAction.ApiCall -> viewModel.handleApiCall(action)
+                is UIAction.Custom -> viewModel.handleCustomAction(action)
+                UIAction.None -> {}
+            }
+        }
     }
 
     when (val state = uiState) {

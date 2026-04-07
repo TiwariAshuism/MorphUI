@@ -102,7 +102,7 @@ object StyleResolver {
             color = parseColor(textColor) ?: Color.Unspecified,
             fontSize = fontSize?.sp ?: TextStyle.Default.fontSize,
             fontWeight = parseFontWeight(fontWeight),
-            textAlign = parseTextAlign(textAlign)
+            textAlign = parseTextAlign(textAlign) ?: TextStyle.Default.textAlign
         )
     }
 

@@ -76,6 +76,15 @@ class ComponentRegistry {
     // ──────────────────────────────────────────────
 
     private fun registerBuiltInParsers() {
+        register("page") { props, children, style, id ->
+            PageComponent(
+                title = props["title"] as? String,
+                children = children,
+                id = id,
+                style = style,
+            )
+        }
+
         register("text") { props, _, style, id ->
             TextComponent(
                 value = props["value"] as? String ?: "",
@@ -88,6 +97,20 @@ class ComponentRegistry {
             ImageComponent(
                 url = props["url"] as? String ?: "",
                 contentDescription = props["contentDescription"] as? String,
+                id = id,
+                style = style,
+            )
+        }
+
+        register("hero") { props, _, style, id ->
+            HeroComponent(
+                imageUrl = props["imageUrl"] as? String
+                    ?: props["url"] as? String
+                    ?: "",
+                title = props["title"] as? String,
+                subtitle = props["subtitle"] as? String,
+                primaryAction = ActionParser.parse(props["primaryAction"]),
+                secondaryAction = ActionParser.parse(props["secondaryAction"]),
                 id = id,
                 style = style,
             )
@@ -166,6 +189,28 @@ class ComponentRegistry {
 
         register("list") { _, children, style, id ->
             ListComponent(
+                children = children,
+                id = id,
+                style = style,
+            )
+        }
+
+        register("carousel") { props, children, style, id ->
+            CarouselComponent(
+                title = props["title"] as? String,
+                itemSpacingDp = (props["itemSpacingDp"] as? Number)?.toFloat(),
+                contentPaddingHorizontalDp = (props["contentPaddingHorizontalDp"] as? Number)?.toFloat(),
+                children = children,
+                id = id,
+                style = style,
+            )
+        }
+
+        register("grid") { props, children, style, id ->
+            GridComponent(
+                columns = (props["columns"] as? Number)?.toInt() ?: 3,
+                horizontalSpacingDp = (props["horizontalSpacingDp"] as? Number)?.toFloat(),
+                verticalSpacingDp = (props["verticalSpacingDp"] as? Number)?.toFloat(),
                 children = children,
                 id = id,
                 style = style,

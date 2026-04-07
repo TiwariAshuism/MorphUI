@@ -23,6 +23,7 @@ object SchemaValidator {
         "image" to listOf("url"),
         "button" to listOf("label"),
         "icon_button" to listOf("icon"),
+        "hero" to listOf("imageUrl"),
     )
 
     /** Component types that require at least one child. */
@@ -30,7 +31,12 @@ object SchemaValidator {
 
     /** Component types that support children. */
     private val supportsChildren: Set<String> = setOf(
-        "column", "row", "list", "bottom_nav", "card"
+        "page",
+        "column", "row", "list",
+        "carousel",
+        "grid",
+        "bottom_nav",
+        "card",
     )
 
     // ──────────────────────────────────────────────

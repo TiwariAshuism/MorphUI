@@ -27,6 +27,7 @@ func NewRouter(logger *slog.Logger, cfg config.Config) http.Handler {
 	mux.HandleFunc("GET /healthz", handlers.Healthz())
 	mux.HandleFunc("GET /home", handlers.Home(uiComposer, mem, cfg, metrics))
 	mux.HandleFunc("GET /section/{id}", handlers.Section(uiComposer, mem, cfg, metrics))
+	mux.HandleFunc("POST /api/mylist", handlers.MyListStub())
 
 	var h http.Handler = mux
 	h = middleware.RequestID(h)
