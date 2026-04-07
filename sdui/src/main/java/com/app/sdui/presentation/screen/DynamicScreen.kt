@@ -19,6 +19,7 @@ fun DynamicScreen(
     onBack: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val formState by viewModel.formState.collectAsState()
 
     LaunchedEffect(screenId) {
         viewModel.loadScreen(screenId)
@@ -44,6 +45,8 @@ fun DynamicScreen(
 
             ComposeRenderer.RenderComponent(
                 component = state.component,
+                formState = formState,
+                onStateChange = viewModel::updateFormState,
                 onAction = { action ->
                     when (action) {
                         is UIAction.Navigate -> onNavigate(action.route, action.params)

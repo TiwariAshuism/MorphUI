@@ -1,0 +1,285 @@
+﻿> Task :sdui:preBuild UP-TO-DATE
+> Task :sdui:preDebugBuild UP-TO-DATE
+> Task :sdui:checkDebugAarMetadata UP-TO-DATE
+> Task :sdui:mergeDebugJniLibFolders UP-TO-DATE
+> Task :sdui:mergeDebugNativeLibs NO-SOURCE
+> Task :sdui:stripDebugDebugSymbols NO-SOURCE
+> Task :sdui:copyDebugJniLibsProjectAndLocalJars UP-TO-DATE
+> Task :sdui:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :sdui:generateDebugResValues UP-TO-DATE
+> Task :sdui:generateDebugResources UP-TO-DATE
+> Task :sdui:packageDebugResources UP-TO-DATE
+> Task :sdui:processDebugNavigationResources UP-TO-DATE
+> Task :sdui:parseDebugLocalResources UP-TO-DATE
+> Task :sdui:generateDebugRFile UP-TO-DATE
+> Task :sdui:extractDeepLinksForAarDebug UP-TO-DATE
+> Task :sdui:mergeDebugShaders UP-TO-DATE
+> Task :sdui:compileDebugShaders NO-SOURCE
+> Task :sdui:generateDebugAssets UP-TO-DATE
+> Task :sdui:mergeDebugAssets UP-TO-DATE
+> Task :sdui:javaPreCompileDebug UP-TO-DATE
+> Task :sdui:prepareDebugArtProfile UP-TO-DATE
+> Task :sdui:prepareLintJarForPublish UP-TO-DATE
+> Task :sdui:processDebugManifest UP-TO-DATE
+> Task :sdui:writeDebugAarMetadata UP-TO-DATE
+
+> Task :sdui:compileDebugKotlin FAILED
+.\gradlew : e: file
+:///C:/Users/Ashu/S
+tudioProjects/Morph
+UI/sdui/src/main/ja
+va/com/app/sdui/com
+ponents/BottomNavCo
+mponent.kt:10:5 A 
+class can only 
+extend a sealed 
+class or interface 
+declared in the 
+same package.
+At line:1 char:1
++ .\gradlew :sdui:a
+ssembleDebug > 
+build_output.txt 
+2>&1
++ ~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~
+    + CategoryInfo 
+             : No  
+  tSpecified: (e   
+ : file:///C:/U    
+...e same pack    
+age.:String) [    
+], RemoteExcep    
+tion
+    + FullyQualifi 
+   edErrorId : Na  
+  tiveCommandErr   
+ or
+ 
+e: file:///C:/Users
+/Ashu/StudioProject
+s/MorphUI/sdui/src/
+main/java/com/app/s
+dui/components/Butt
+onComponent.kt:12:5
+ A class can only 
+extend a sealed 
+class or interface 
+declared in the 
+same package.
+e: file:///C:/Users
+/Ashu/StudioProject
+s/MorphUI/sdui/src/
+main/java/com/app/s
+dui/components/Card
+Component.kt:10:5 
+A class can only 
+extend a sealed 
+class or interface 
+declared in the 
+same package.
+e: file:///C:/Users
+/Ashu/StudioProject
+s/MorphUI/sdui/src/
+main/java/com/app/s
+dui/components/Colu
+mnComponent.kt:10:5
+ A class can only 
+extend a sealed 
+class or interface 
+declared in the 
+same package.
+e: file:///C:/Users
+/Ashu/StudioProject
+s/MorphUI/sdui/src/
+main/java/com/app/s
+dui/components/Divi
+derComponent.kt:11:
+5 A class can only 
+extend a sealed 
+class or interface 
+declared in the 
+same package.
+e: file:///C:/Users
+/Ashu/StudioProject
+s/MorphUI/sdui/src/
+main/java/com/app/s
+dui/components/Icon
+ButtonComponent.kt:
+12:5 A class can 
+only extend a 
+sealed class or 
+interface declared 
+in the same 
+package.
+e: file:///C:/Users
+/Ashu/StudioProject
+s/MorphUI/sdui/src/
+main/java/com/app/s
+dui/components/Imag
+eComponent.kt:11:5 
+A class can only 
+extend a sealed 
+class or interface 
+declared in the 
+same package.
+e: file:///C:/Users
+/Ashu/StudioProject
+s/MorphUI/sdui/src/
+main/java/com/app/s
+dui/components/List
+Component.kt:10:5 
+A class can only 
+extend a sealed 
+class or interface 
+declared in the 
+same package.
+e: file:///C:/Users
+/Ashu/StudioProject
+s/MorphUI/sdui/src/
+main/java/com/app/s
+dui/components/RowC
+omponent.kt:10:5 A 
+class can only 
+extend a sealed 
+class or interface 
+declared in the 
+same package.
+e: file:///C:/Users
+/Ashu/StudioProject
+s/MorphUI/sdui/src/
+main/java/com/app/s
+dui/components/Spac
+erComponent.kt:11:5
+ A class can only 
+extend a sealed 
+class or interface 
+declared in the 
+same package.
+e: file:///C:/Users
+/Ashu/StudioProject
+s/MorphUI/sdui/src/
+main/java/com/app/s
+dui/components/Text
+Component.kt:10:5 
+A class can only 
+extend a sealed 
+class or interface 
+declared in the 
+same package.
+e: file:///C:/Users
+/Ashu/StudioProject
+s/MorphUI/sdui/src/
+main/java/com/app/s
+dui/components/Text
+InputComponent.kt:1
+3:5 A class can 
+only extend a 
+sealed class or 
+interface declared 
+in the same 
+package.
+e: file:///C:/Users
+/Ashu/StudioProject
+s/MorphUI/sdui/src/
+main/java/com/app/s
+dui/components/Unkn
+ownComponent.kt:14:
+5 A class can only 
+extend a sealed 
+class or interface 
+declared in the 
+same package.
+e: file:///C:/Users
+/Ashu/StudioProject
+s/MorphUI/sdui/src/
+main/java/com/app/s
+dui/renderer/StyleR
+esolver.kt:102:13 
+No parameter with 
+name 'color' found.
+e: file:///C:/Users
+/Ashu/StudioProject
+s/MorphUI/sdui/src/
+main/java/com/app/s
+dui/renderer/StyleR
+esolver.kt:103:13 
+No parameter with 
+name 'fontSize' 
+found.
+e: file:///C:/Users
+/Ashu/StudioProject
+s/MorphUI/sdui/src/
+main/java/com/app/s
+dui/renderer/StyleR
+esolver.kt:104:13 
+No parameter with 
+name 'fontWeight' 
+found.
+e: file:///C:/Users
+/Ashu/StudioProject
+s/MorphUI/sdui/src/
+main/java/com/app/s
+dui/renderer/StyleR
+esolver.kt:105:13 
+No parameter with 
+name 'textAlign' 
+found.
+e: file:///C:/Users
+/Ashu/StudioProject
+s/MorphUI/sdui/src/
+main/java/com/app/s
+dui/renderer/StyleR
+esolver.kt:105:13 
+No value passed 
+for parameter 
+'spanStyle'.
+e: file:///C:/Users
+/Ashu/StudioProject
+s/MorphUI/sdui/src/
+main/java/com/app/s
+dui/renderer/StyleR
+esolver.kt:105:13 
+No value passed 
+for parameter 
+'paragraphStyle'.
+
+FAILURE: Build 
+failed with an 
+exception.
+
+* What went wrong:
+Execution failed 
+for task ':sdui:com
+pileDebugKotlin'.
+> A failure 
+occurred while 
+executing org.jetbr
+ains.kotlin.compile
+rRunner.GradleCompi
+lerRunnerWithWorker
+s$GradleKotlinCompi
+lerWorkAction
+   > Compilation 
+error. See log for 
+more details
+
+* Try:
+> Run with 
+--stacktrace 
+option to get the 
+stack trace.
+> Run with --info 
+or --debug option 
+to get more log 
+output.
+> Run with --scan 
+to get full 
+insights.
+> Get more help at 
+https://help.gradle
+.org.
+
+BUILD FAILED in 2s
+18 actionable tasks: 1 executed, 17 up-to-date

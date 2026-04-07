@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://morphui.local/schema/sdui.v1.json",
+  "title": "MorphUI SDUI Envelope v1",
+  "type": "object",
+  "required": ["schema_version", "ui_version", "page_id", "trace_id", "server_time_ms"],
+  "properties": {
+    "schema_version": { "type": "string", "const": "sdui.v1" },
+    "ui_version": { "type": "integer", "minimum": 1 },
+    "page_id": { "type": "string" },
+    "ttl_ms": { "type": "integer", "minimum": 0 },
+    "trace_id": { "type": "string" },
+    "server_time_ms": { "type": "integer" },
+    "experiments": { "type": "object", "additionalProperties": { "type": "string" } },
+    "feature_flags": { "type": "object", "additionalProperties": { "type": "boolean" } },
+    "errors": { "type": "array", "items": { "type": "string" } },
+    "screen": { "$ref": "#/$defs/component" },
+    "page": { "$ref": "#/$defs/component" },
+    "fallback_page": { "$ref": "#/$defs/component" },
+    "client_hints": { "type": "object" }
+  },
+  "$defs": {
+    "component": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": { "type": "string" },
+        "id": { "type": "string" },
+        "props": { "type": "object" },
+        "style": { "type": "object" },
+        "children": { "type": "array", "items": { "$ref": "#/$defs/component" } },
+        "fallback": { "$ref": "#/$defs/component" },
+        "analytics": { "type": "object" },
+        "gating": {
+          "type": "object",
+          "properties": {
+            "feature_flag": { "type": "string" },
+            "experiment": { "type": "string" },
+            "variant": { "type": "string" },
+            "required": { "type": "boolean" }
+          }
+        }
+      },
+      "additionalProperties": true
+    }
+  }
+}

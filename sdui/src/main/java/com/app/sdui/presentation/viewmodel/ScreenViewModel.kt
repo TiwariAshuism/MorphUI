@@ -29,6 +29,13 @@ class ScreenViewModel(
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
 
+    private val _formState = MutableStateFlow<Map<String, Any>>(emptyMap())
+    val formState: StateFlow<Map<String, Any>> = _formState.asStateFlow()
+
+    fun updateFormState(key: String, value: Any) {
+        _formState.value = _formState.value + (key to value)
+    }
+
     /** Runtime data context for data binding (e.g. user info). */
     private var bindingData: Map<String, Any> = emptyMap()
 
@@ -42,6 +49,7 @@ class ScreenViewModel(
         android.util.Log.d("ScreenViewModel", "Loading screen: $screenId")
         viewModelScope.launch {
             _uiState.value = UiState.Loading
+            _formState.value = emptyMap()
 
             // 1. Try cached content first for instant render
             engine.loadCached(screenId, bindingData)?.let { cached ->
@@ -113,7 +121,8 @@ class ScreenViewModel(
 
     fun handleApiCall(action: UIAction.ApiCall) {
         // TODO: Implement API call handling
-        android.util.Log.d("ScreenViewModel", "API Call: ${action.method} ${action.endpoint}")
+        val finalBody = action.body.orEmpty() + _formState.value
+        android.util.Log.d("ScreenViewModel", "API Call: ${action.method} ${action.endpoint} with body $finalBody")
         Toast.makeText(context, "API: ${action.method} ${action.endpoint}", Toast.LENGTH_SHORT).show()
     }
 

@@ -34,22 +34,25 @@ object ComposeRenderer {
     @Composable
     fun RenderComponent(
         component: UIComponent,
+        formState: Map<String, Any>,
+        onStateChange: (String, Any) -> Unit,
         onAction: (UIAction) -> Unit,
     ) {
         when (component) {
             is TextComponent -> RenderText(component)
             is ImageComponent -> RenderImage(component)
             is ButtonComponent -> RenderButton(component, onAction)
-            is ColumnComponent -> RenderColumn(component, onAction)
-            is RowComponent -> RenderRow(component, onAction)
+            is ColumnComponent -> RenderColumn(component, formState, onStateChange, onAction)
+            is RowComponent -> RenderRow(component, formState, onStateChange, onAction)
             is SpacerComponent -> RenderSpacer(component)
-            is CardComponent -> RenderCard(component, onAction)
+            is CardComponent -> RenderCard(component, formState, onStateChange, onAction)
             is DividerComponent -> RenderDivider(component)
-            is TextInputComponent -> RenderTextInput(component, onAction)
+            is TextInputComponent -> RenderTextInput(component, formState, onStateChange, onAction)
             is IconButtonComponent -> RenderIconButton(component, onAction)
-            is ListComponent -> RenderList(component, onAction)
-            is BottomNavComponent -> RenderBottomNav(component, onAction)
+            is ListComponent -> RenderList(component, formState, onStateChange, onAction)
+            is BottomNavComponent -> RenderBottomNav(component, formState, onStateChange, onAction)
             is UnknownComponent -> RenderUnknown(component)
+            else -> RenderUnknown(UnknownComponent(type = component.javaClass.simpleName, id = component.id, style = component.style))
         }
     }
 
@@ -100,23 +103,23 @@ object ComposeRenderer {
     }
 
     @Composable
-    private fun RenderColumn(component: ColumnComponent, onAction: (UIAction) -> Unit) {
+    private fun RenderColumn(component: ColumnComponent, formState: Map<String, Any>, onStateChange: (String, Any) -> Unit, onAction: (UIAction) -> Unit) {
         Column(
             modifier = component.style.toContainerModifier(),
         ) {
             component.children.forEach { child ->
-                RenderComponent(child, onAction)
+                RenderComponent(child, formState, onStateChange, onAction)
             }
         }
     }
 
     @Composable
-    private fun RenderRow(component: RowComponent, onAction: (UIAction) -> Unit) {
+    private fun RenderRow(component: RowComponent, formState: Map<String, Any>, onStateChange: (String, Any) -> Unit, onAction: (UIAction) -> Unit) {
         Row(
             modifier = component.style.toContainerModifier(),
         ) {
             component.children.forEach { child ->
-                RenderComponent(child, onAction)
+                RenderComponent(child, formState, onStateChange, onAction)
             }
         }
     }
@@ -131,7 +134,7 @@ object ComposeRenderer {
     }
 
     @Composable
-    private fun RenderCard(component: CardComponent, onAction: (UIAction) -> Unit) {
+    private fun RenderCard(component: CardComponent, formState: Map<String, Any>, onStateChange: (String, Any) -> Unit, onAction: (UIAction) -> Unit) {
         val style = component.style
 
         Card(
@@ -144,7 +147,7 @@ object ComposeRenderer {
                 defaultElevation = style?.elevation?.dp ?: 4.dp,
             ),
         ) {
-            RenderComponent(component.child, onAction)
+            RenderComponent(component.child, formState, onStateChange, onAction)
         }
     }
 
@@ -160,13 +163,28 @@ object ComposeRenderer {
     }
 
     @Composable
-    private fun RenderTextInput(component: TextInputComponent, onAction: (UIAction) -> Unit) {
+    private fun RenderTextInput(
+        component: TextInputComponent,
+        formState: Map<String, Any>,
+        onStateChange: (String, Any) -> Unit,
+        onAction: (UIAction) -> Unit
+    ) {
         val style = component.style
-        val textState = remember(component.id ?: "") { mutableStateOf(component.value) }
+        val internalState = remember(component.id ?: "") { mutableStateOf(component.value) }
+        val textValue = if (component.id != null) {
+            formState[component.id] as? String ?: component.value
+        } else {
+            internalState.value
+        }
 
         OutlinedTextField(
-            value = textState.value,
-            onValueChange = { textState.value = it },
+            value = textValue,
+            onValueChange = { newValue ->
+                internalState.value = newValue
+                if (component.id != null) {
+                    onStateChange(component.id, newValue)
+                }
+            },
             modifier = style.toContainerModifier(),
             placeholder = {
                 component.placeholder?.let {
@@ -199,19 +217,19 @@ object ComposeRenderer {
     }
 
     @Composable
-    private fun RenderList(component: ListComponent, onAction: (UIAction) -> Unit) {
+    private fun RenderList(component: ListComponent, formState: Map<String, Any>, onStateChange: (String, Any) -> Unit, onAction: (UIAction) -> Unit) {
         LazyColumn(
             modifier = component.style.toContainerModifier()
                 .then(Modifier.fillMaxSize()),
         ) {
             items(component.children) { child ->
-                RenderComponent(child, onAction)
+                RenderComponent(child, formState, onStateChange, onAction)
             }
         }
     }
 
     @Composable
-    private fun RenderBottomNav(component: BottomNavComponent, onAction: (UIAction) -> Unit) {
+    private fun RenderBottomNav(component: BottomNavComponent, formState: Map<String, Any>, onStateChange: (String, Any) -> Unit, onAction: (UIAction) -> Unit) {
         val style = component.style
 
         Surface(
@@ -225,7 +243,7 @@ object ComposeRenderer {
                 horizontalArrangement = Arrangement.SpaceEvenly,
             ) {
                 component.children.forEach { child ->
-                    RenderComponent(child, onAction)
+                    RenderComponent(child, formState, onStateChange, onAction)
                 }
             }
         }

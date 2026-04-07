@@ -98,11 +98,11 @@ object StyleResolver {
     fun UIStyle?.toTextStyle(): TextStyle {
         if (this == null) return TextStyle.Default
 
-        return TextStyle(
+        return TextStyle.Default.copy(
             color = parseColor(textColor) ?: Color.Unspecified,
             fontSize = fontSize?.sp ?: TextStyle.Default.fontSize,
             fontWeight = parseFontWeight(fontWeight),
-            textAlign = parseTextAlign(textAlign),
+            textAlign = parseTextAlign(textAlign)
         )
     }
 

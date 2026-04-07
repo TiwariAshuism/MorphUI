@@ -6,7 +6,7 @@ package com.app.sdui.core
  * Every UI component in the SDUI system extends this interface,
  * enabling exhaustive pattern matching in the renderer and inspector.
  */
-sealed interface UIComponent {
+interface UIComponent {
     val id: String?
     val style: UIStyle?
 }
